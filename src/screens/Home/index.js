@@ -6,6 +6,7 @@ import {CustomText} from '../../components';
 
 const HomeScreen = ({navigation}) => {
   const [filter, setFilter] = React.useState('AB');
+  const [filterKey, setFilterKey] = React.useState('all'); // 'all' || 'pending' || 'success' || 'reject'
 
   const testBarang = [
     {
@@ -64,6 +65,25 @@ const HomeScreen = ({navigation}) => {
     },
   ];
 
+  const filterStatus = [
+    {
+      type: 'all',
+      title: 'Semua',
+    },
+    {
+      type: 'pending',
+      title: 'Pending',
+    },
+    {
+      type: 'success',
+      title: 'Sukses',
+    },
+    {
+      type: 'reject',
+      title: 'Ditolak',
+    },
+  ];
+
   //render badge
   const Badge = ({status}) => {
     const _setConfig = () => {
@@ -116,6 +136,38 @@ const HomeScreen = ({navigation}) => {
     );
   };
 
+  //status filter
+  const renderStatusFilter = () => {
+    return (
+      <View style={styles.filterContainer}>
+        {filterStatus.map((item, index) => {
+          return (
+            <View
+              style={
+                item?.type == filterKey
+                  ? styles.statusFilterContainerActive
+                  : styles.statusFilterContainer
+              }>
+              <TouchableOpacity
+                style={styles.statusFilterButton}
+                activeOpacity={0.6}
+                onPress={() => setFilterKey(item?.type)}>
+                <Text
+                  style={
+                    item?.type == filterKey
+                      ? styles.textFilter
+                      : styles.textFilterInactive
+                  }>
+                  {item?.title}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          );
+        })}
+      </View>
+    );
+  };
+
   //MAIN RENDER
   return (
     <View style={styles.container}>
@@ -149,6 +201,7 @@ const HomeScreen = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
+        {renderStatusFilter()}
         <FlatList
           contentContainerStyle={styles.list}
           data={testBarang}
@@ -258,6 +311,32 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 
+  filterContainer: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+  },
+
+  statusFilterContainer: {
+    flex: 1,
+    marginHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 0.5,
+  },
+
+  statusFilterContainerActive: {
+    flex: 1,
+    backgroundColor: Colors.COLOR_SECONDARY,
+    marginHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 0,
+  },
+
   //textstyle
 
   textTitle: {
@@ -293,6 +372,16 @@ const styles = StyleSheet.create({
     color: Colors.COLOR_WHITE,
     fontSize: 12,
     fontWeight: 'bold',
+  },
+
+  textFilter: {
+    color: Colors.COLOR_WHITE,
+    fontSize: 12,
+  },
+
+  textFilterInactive: {
+    color: Colors.COLOR_BLACK,
+    fontSize: 12,
   },
 
   textDescBlack: {

@@ -9,6 +9,7 @@ import {AppBar} from '../components';
 import {TabBarIcon} from '../components';
 import {Colors} from '../styles';
 import AuthScreen from '../screens/Auth';
+import ProductScreen from '../screens/Profile/screen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -50,7 +51,7 @@ export const TabStack = () => {
           title: 'Dashboard',
         }}
       />
-      <Tab.Screen name={'Profile'} component={ProfileScreen} />
+      <Tab.Screen name={'Product'} component={ProductStack} />
     </Tab.Navigator>
   );
 };
@@ -63,6 +64,20 @@ export const HomeStack = () => {
         component={HomeScreen}
         options={{
           title: 'Dashboard',
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+export const ProductStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ProductInit"
+        component={ProductScreen}
+        options={{
+          title: 'Product',
         }}
       />
     </Stack.Navigator>
