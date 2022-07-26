@@ -6,7 +6,7 @@ const AuthScreen = ({navigation}) => {
   const [code, setCode] = React.useState('');
   const [isError, setIsError] = React.useState(false);
 
-  const ADMIN_CODE = 'admin8080';
+  const ADMIN_CODE = '1234';
 
   const checkAdminCode = () => {
     if (ADMIN_CODE == code) {
@@ -14,7 +14,7 @@ const AuthScreen = ({navigation}) => {
         index: 0,
         routes: [
           {
-            name: 'TabStack',
+            name: 'Dashboard',
           },
         ],
       });

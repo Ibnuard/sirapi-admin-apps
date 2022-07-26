@@ -13,7 +13,7 @@ import AuthScreen from '../screens/Auth';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-export const HomeStack = () => {
+export const InitStack = () => {
   return (
     <Stack.Navigator initialRouteName={'Home'}>
       <Stack.Screen
@@ -24,7 +24,11 @@ export const HomeStack = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen name={'TabStack'} component={TabStack} />
+      <Stack.Screen
+        name={'Dashboard'}
+        component={TabStack}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
@@ -39,8 +43,28 @@ export const TabStack = () => {
         activeTintColor: Colors.COLOR_PRIMARY,
         inactiveTintColor: Colors.COLOR_GRAY,
       }}>
-      <Tab.Screen name={'Home'} component={HomeScreen} />
+      <Tab.Screen
+        name={'Home'}
+        component={HomeStack}
+        options={{
+          title: 'Dashboard',
+        }}
+      />
       <Tab.Screen name={'Profile'} component={ProfileScreen} />
     </Tab.Navigator>
+  );
+};
+
+export const HomeStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="HomeInit"
+        component={HomeScreen}
+        options={{
+          title: 'Dashboard',
+        }}
+      />
+    </Stack.Navigator>
   );
 };
