@@ -1,9 +1,34 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Image} from 'react-native';
 import {Button} from '../../components';
 import {Colors} from '../../styles';
+import {ADMIN_GET_ALL_PRODUCT} from '../../utils/FirebaseUtils';
 
 const ProductScreen = ({navigation}) => {
+  const [products, setProducts] = React.useState([]);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getAllProducts();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  function getAllProducts() {
+    console.log('Getting products....');
+    ADMIN_GET_ALL_PRODUCT().then(data => {
+      if (data.size > 0) {
+        let temp = [];
+        data?.forEach(doc => {
+          temp.push(doc.data());
+          console.log('DATA: ' + doc?.data());
+        });
+        setProducts(temp);
+      }
+    });
+  }
+
   const stocks = [
     {
       name: 'Sepatu',
@@ -29,12 +54,18 @@ const ProductScreen = ({navigation}) => {
     return (
       <View style={styles.listCard}>
         <View style={styles.defaultIcon}>
-          <Text style={styles.textTitleLarge}>{item?.qty}</Text>
+          <Image
+            source={{uri: `data:image/png;base64,${item?.productPic}`}}
+            style={styles.defaultPic}
+            resizeMode={'cover'}
+          />
         </View>
         <View style={{flex: 1}}>
-          <Text style={styles.textTitleBlack}>{item?.name}</Text>
-          <Text style={styles.textDescBlack}>{item?.stock}</Text>
-          <Text style={styles.textDescBlack}>{item?.description}</Text>
+          <Text style={styles.textTitleBlack}>{item?.productName}</Text>
+          <Text style={styles.textDescBlack}>
+            Tersedia {item?.productQuantity}
+          </Text>
+          <Text style={styles.textDescBlack}>{item?.productDescription}</Text>
         </View>
       </View>
     );
@@ -50,7 +81,7 @@ const ProductScreen = ({navigation}) => {
         <Text style={styles.textTitleBlack}>Stock Barang</Text>
       </View>
       <FlatList
-        data={stocks}
+        data={products}
         renderItem={({item, index}) => <RenderItem item={item} />}
       />
     </View>
@@ -95,6 +126,12 @@ const styles = StyleSheet.create({
     marginRight: 12,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  defaultPic: {
+    width: 50,
+    height: 50,
+    borderRadius: 12,
   },
 
   //Text
