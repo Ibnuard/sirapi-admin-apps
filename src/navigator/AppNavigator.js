@@ -10,6 +10,8 @@ import {TabBarIcon} from '../components';
 import {Colors} from '../styles';
 import AuthScreen from '../screens/Auth';
 import ProductScreen from '../screens/Profile/screen';
+import AddProductScreen from '../screens/AddProduct';
+import {getIsTabBarVisible} from '../utils/Utils';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,6 +41,7 @@ export const TabStack = () => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarIcon: props => <TabBarIcon {...props} route={route} />,
+        tabBarVisible: getIsTabBarVisible(route),
       })}
       tabBarOptions={{
         activeTintColor: Colors.COLOR_PRIMARY,
@@ -78,6 +81,14 @@ export const ProductStack = () => {
         component={ProductScreen}
         options={{
           title: 'Product',
+        }}
+      />
+
+      <Stack.Screen
+        name="AddProduct"
+        component={AddProductScreen}
+        options={{
+          title: 'Tambah Product',
         }}
       />
     </Stack.Navigator>

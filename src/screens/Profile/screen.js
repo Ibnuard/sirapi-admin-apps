@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {Button} from '../../components';
 import {Colors} from '../../styles';
 
-const ProductScreen = () => {
+const ProductScreen = ({navigation}) => {
   const stocks = [
     {
       name: 'Sepatu',
@@ -42,7 +42,10 @@ const ProductScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Button title="+ Tambah Barang" />
+      <Button
+        title="+ Tambah Barang"
+        onPress={() => navigation.navigate('AddProduct')}
+      />
       <View style={styles.stockContainer}>
         <Text style={styles.textTitleBlack}>Stock Barang</Text>
       </View>
@@ -62,7 +65,7 @@ const styles = StyleSheet.create({
   },
 
   stockContainer: {
-    marginTop: 18,
+    marginVertical: 18,
   },
 
   listCard: {
