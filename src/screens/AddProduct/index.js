@@ -12,7 +12,12 @@ import BaseModal from '../../components/Modal';
 import {Colors} from '../../styles';
 import Icon from 'react-native-vector-icons/Entypo';
 import {getImageFromCamera, getImageFromGallery} from '../../utils/MediaUtils';
-import {ADMIN_ADD_PRODUCT} from '../../utils/FirebaseUtils';
+import {
+  ADMIN_ADD_PRODUCT,
+  ADMIN_DELETE_PRODUCT,
+  ADMIN_ON_DATA_ADDED,
+} from '../../utils/FirebaseUtils';
+import {generateProductId} from '../../utils/Utils';
 
 const AddProductScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -53,25 +58,54 @@ const AddProductScreen = ({navigation}) => {
   const addProduct = () => {
     setModalType('loading');
     setModalVisible(true);
+
+    const productID = generateProductId();
+
     const data = {
+      productId: productID,
       productName: inputName,
       productDescription: inputDescription,
       productCode: inputCode,
       productQuantity: inputQty,
       productPic: selectedImage,
     };
-    ADMIN_ADD_PRODUCT(data)
+    ADMIN_ADD_PRODUCT(productID, data)
       .then(() => {
-        setModalType('success');
-        setModalMessage('Barang berhasil ditambahkan.');
-        console.log('Write Success');
+        doReport(inputQty, productID);
       })
       .catch(e => {
         setModalType('warning');
-        setModalMessage(e?.message);
+        setModalMessage('Barang gagal ditambahkan!');
         console.log('Write Failed : ' + e.message);
       });
   };
+
+  function doReport(qty, id) {
+    console.log('DO report....');
+    const quantity = Number(qty);
+    ADMIN_ON_DATA_ADDED(quantity)
+      .then(() => {
+        setModalType('success');
+        setModalMessage('Barang berhasil ditambahkan.');
+        console.log('report Success');
+      })
+      .catch(err => {
+        deleteProduct(id);
+      });
+  }
+
+  function deleteProduct(id) {
+    setModalType('loading');
+    ADMIN_DELETE_PRODUCT(id)
+      .then(() => {
+        setModalType('warning');
+        setModalMessage('Barang gagal ditambahkan!');
+      })
+      .catch(err => {
+        setModalType('warning');
+        setModalMessage('Kesalahan tidak diketahui!');
+      });
+  }
 
   return (
     <View style={styles.container}>

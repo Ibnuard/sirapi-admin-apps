@@ -14,6 +14,7 @@ const BaseModal = ({
   onButtonPress,
   onGalleryButtonPress,
   onCameraButtonPress,
+  onCancelButtonPress,
 }) => {
   function _renderLoadingModal() {
     return (
@@ -29,6 +30,22 @@ const BaseModal = ({
         <Icon name="warning" size={36} />
         <Text style={styles.textWarning}>{message ?? 'Ini pesan warning'}</Text>
         <Button title="Ok" onPress={onButtonPress} />
+      </View>
+    );
+  }
+
+  function _renderWarningDecisionModal() {
+    return (
+      <View style={styles.warningContainer}>
+        <Icon name="warning" size={36} />
+        <Text style={styles.textWarning}>{message ?? 'Ini pesan warning'}</Text>
+        <Button title="Ok" onPress={onButtonPress} />
+        <TouchableOpacity
+          style={styles.cancelButton}
+          activeOpacity={0.6}
+          onPress={onCancelButtonPress}>
+          <Text style={styles.textCancel}>Batal</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -80,6 +97,9 @@ const BaseModal = ({
         break;
       case 'mediaupload':
         return _renderMediaUploadModal();
+        break;
+      case 'alert':
+        return _renderWarningDecisionModal();
         break;
       default:
         break;
@@ -138,6 +158,11 @@ const styles = StyleSheet.create({
 
   textCancel: {
     color: Colors.COLOR_RED,
+  },
+
+  textAlertCancel: {
+    color: Colors.COLOR_RED,
+    marginTop: 18,
   },
 });
 

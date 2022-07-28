@@ -3,10 +3,21 @@ import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {Colors} from '../../styles';
 import Icon from 'react-native-vector-icons/Entypo';
 import {CustomText} from '../../components';
+import {ADMIN_GET_REPORT} from '../../utils/FirebaseUtils';
 
 const HomeScreen = ({navigation}) => {
   const [filter, setFilter] = React.useState('AB');
   const [filterKey, setFilterKey] = React.useState('all'); // 'all' || 'pending' || 'success' || 'reject'
+  const [report, setReport] = React.useState();
+  const [reportError, setReportError] = React.useState(false);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getProductReport();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const testBarang = [
     {
@@ -84,6 +95,17 @@ const HomeScreen = ({navigation}) => {
     },
   ];
 
+  function getProductReport() {
+    ADMIN_GET_REPORT()
+      .then(snapshot => {
+        const data = snapshot.data();
+        setReport(data);
+      })
+      .catch(() => {
+        setReportError(true);
+      });
+  }
+
   //render badge
   const Badge = ({status}) => {
     const _setConfig = () => {
@@ -111,7 +133,7 @@ const HomeScreen = ({navigation}) => {
     return (
       <View style={secondary ? styles.cardSecondary : styles.card}>
         <Icon name={icon} size={18} color={Colors.COLOR_WHITE} />
-        <View>
+        <View style={{marginTop: 8}}>
           <Text style={styles.textTitle}>{title ?? 'title'}</Text>
           <Text style={styles.textDesc}>{desc ?? 'desc'}</Text>
         </View>
@@ -173,17 +195,25 @@ const HomeScreen = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.row}>
         <CardView
-          title={'1234'}
+          title={report?.productIn}
           icon="arrow-bold-down"
           secondary={true}
           desc={'Barang Masuk'}
         />
-        <CardView title={'8080'} icon="arrow-bold-up" desc={'Barang Keluar'} />
+        <CardView
+          title={report?.productOut}
+          icon="arrow-bold-up"
+          desc={'Barang Keluar'}
+        />
       </View>
       <View style={styles.row}>
-        <CardView title={'1234'} icon="circular-graph" desc={'Barang Sisa'} />
         <CardView
-          title={'8080'}
+          title={report?.productAvailable}
+          icon="circular-graph"
+          desc={'Barang Sisa'}
+        />
+        <CardView
+          title={report?.productTotal}
           secondary
           icon={'circle'}
           desc={'Total Barang'}

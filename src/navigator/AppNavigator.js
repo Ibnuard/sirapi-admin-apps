@@ -12,6 +12,7 @@ import AuthScreen from '../screens/Auth';
 import ProductScreen from '../screens/Profile/screen';
 import AddProductScreen from '../screens/AddProduct';
 import {getIsTabBarVisible} from '../utils/Utils';
+import EditDeleteProductScreen from '../screens/EditDeleteProduct';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -89,6 +90,14 @@ export const ProductStack = () => {
         component={AddProductScreen}
         options={{
           title: 'Tambah Product',
+        }}
+      />
+
+      <Stack.Screen
+        name="EditDeleteProduct"
+        component={EditDeleteProductScreen}
+        options={{
+          title: 'Ubah Product',
         }}
       />
     </Stack.Navigator>

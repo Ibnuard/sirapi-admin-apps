@@ -1,11 +1,20 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, FlatList, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import {Button} from '../../components';
 import {Colors} from '../../styles';
 import {ADMIN_GET_ALL_PRODUCT} from '../../utils/FirebaseUtils';
 
 const ProductScreen = ({navigation}) => {
   const [products, setProducts] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -16,43 +25,31 @@ const ProductScreen = ({navigation}) => {
   }, [navigation]);
 
   function getAllProducts() {
+    setIsLoading(true);
+    setProducts([]);
     console.log('Getting products....');
     ADMIN_GET_ALL_PRODUCT().then(data => {
       if (data.size > 0) {
         let temp = [];
         data?.forEach(doc => {
+          const datas = doc?.data();
           temp.push(doc.data());
-          console.log('DATA: ' + doc?.data());
+          console.log('DATA: ' + datas?.id);
         });
         setProducts(temp);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
       }
     });
   }
 
-  const stocks = [
-    {
-      name: 'Sepatu',
-      image: '',
-      description: 'test',
-      stock: 80,
-    },
-    {
-      name: 'Sendal',
-      image: '',
-      description: 'test',
-      stock: 8,
-    },
-    {
-      name: 'Topi',
-      image: '',
-      description: 'test',
-      stock: 180,
-    },
-  ];
-
   const RenderItem = ({item}) => {
     return (
-      <View style={styles.listCard}>
+      <TouchableOpacity
+        style={styles.listCard}
+        activeOpacity={0.8}
+        onPress={() => navigation.navigate('EditDeleteProduct', {data: item})}>
         <View style={styles.defaultIcon}>
           <Image
             source={{uri: `data:image/png;base64,${item?.productPic}`}}
@@ -67,7 +64,7 @@ const ProductScreen = ({navigation}) => {
           </Text>
           <Text style={styles.textDescBlack}>{item?.productDescription}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -79,11 +76,27 @@ const ProductScreen = ({navigation}) => {
       />
       <View style={styles.stockContainer}>
         <Text style={styles.textTitleBlack}>Stock Barang</Text>
+        <Text style={styles.textDesc}>
+          Tekan untuk mengupdate atau menghapus barang
+        </Text>
       </View>
-      <FlatList
-        data={products}
-        renderItem={({item, index}) => <RenderItem item={item} />}
-      />
+      <View style={{flex: 1}}>
+        {isLoading ? (
+          <View style={{justifyContent: 'center', flex: 1}}>
+            <ActivityIndicator />
+          </View>
+        ) : !products?.length ? (
+          <View
+            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+            <Text style={styles.textDesc}>Belum Ada Product</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={products}
+            renderItem={({item, index}) => <RenderItem item={item} />}
+          />
+        )}
+      </View>
     </View>
   );
 };
@@ -129,8 +142,8 @@ const styles = StyleSheet.create({
   },
 
   defaultPic: {
-    width: 50,
-    height: 50,
+    width: 52,
+    height: 52,
     borderRadius: 12,
   },
 
@@ -140,6 +153,22 @@ const styles = StyleSheet.create({
     color: Colors.COLOR_BLACK,
     fontSize: 18,
     fontWeight: 'bold',
+  },
+
+  textDesc: {
+    color: Colors.COLOR_GRAY,
+    fontSize: 12,
+  },
+
+  textDescBlack: {
+    color: Colors.COLOR_BLACK,
+    fontSize: 12,
+  },
+
+  textDescBlackSmall: {
+    color: Colors.COLOR_GRAY,
+    marginTop: 8,
+    fontSize: 10,
   },
 });
 
