@@ -8,9 +8,9 @@ import {
   ADMIN_GET_REPORT,
 } from '../../utils/FirebaseUtils';
 import {ActivityIndicator} from 'react-native-paper';
+import _ from 'lodash';
 
 const HomeScreen = ({navigation}) => {
-  const [filter, setFilter] = React.useState('AB');
   const [filterKey, setFilterKey] = React.useState('all'); // 'all' || 'pending' || 'success' || 'reject'
   const [report, setReport] = React.useState();
   const [reportError, setReportError] = React.useState(false);
@@ -25,63 +25,6 @@ const HomeScreen = ({navigation}) => {
 
     return unsubscribe;
   }, [navigation]);
-
-  const testBarang = [
-    {
-      nama: 'Bapak Adek',
-      barang: 'Buku',
-      kode: 'ABCD',
-      qty: '12',
-      status: 'pending',
-      message: '',
-      datetime: 'Senin, 1 Juli 2022',
-    },
-    {
-      nama: 'Bapak Kakak',
-      barang: 'Sepatu',
-      kode: 'ABCD',
-      qty: '3',
-      status: 'success',
-      message: '',
-      datetime: 'Selasa, 2 Juli 2022',
-    },
-    {
-      nama: 'Bapak Bubu',
-      barang: 'Sandal',
-      kode: 'ABCD',
-      qty: '4',
-      status: 'reject',
-      message: 'stock habis',
-      datetime: 'Rabu, 3 Juli 2022',
-    },
-    {
-      nama: 'Bapak Adek',
-      barang: 'Buku',
-      kode: 'ABCD',
-      qty: '12',
-      status: 'pending',
-      message: '',
-      datetime: 'Senin, 1 Juli 2022',
-    },
-    {
-      nama: 'Bapak Kakak',
-      barang: 'Sepatu',
-      kode: 'ABCD',
-      qty: '3',
-      status: 'success',
-      message: '',
-      datetime: 'Selasa, 2 Juli 2022',
-    },
-    {
-      nama: 'Bapak Bubu',
-      barang: 'Sandal',
-      kode: 'ABCD',
-      qty: '4',
-      status: 'reject',
-      message: 'stock habis',
-      datetime: 'Rabu, 3 Juli 2022',
-    },
-  ];
 
   const filterStatus = [
     {
@@ -101,6 +44,14 @@ const HomeScreen = ({navigation}) => {
       title: 'Ditolak',
     },
   ];
+
+  function filterIndexingList(list = []) {
+    return filterKey !== 'all'
+      ? list.filter((item, index) => {
+          return item.status == filterKey;
+        })
+      : list;
+  }
 
   function getProductReport() {
     ADMIN_GET_REPORT()
@@ -123,7 +74,10 @@ const HomeScreen = ({navigation}) => {
           const data = doc?.data();
           temp.push(data);
         });
-        setRequestList(temp);
+
+        const reverse = _.reverse(temp);
+
+        setRequestList(reverse);
         setIsLoading(false);
       } else {
         setIsLoading(false);
@@ -169,7 +123,10 @@ const HomeScreen = ({navigation}) => {
   //list item
   const RenderItem = ({item}) => {
     return (
-      <View style={styles.listCard}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.listCard}
+        onPress={() => navigation.navigate('ProductDetail', {data: item})}>
         <View style={styles.defaultIcon}>
           <Text style={styles.textTitleLarge}>
             {item?.requester?.requestQty}
@@ -185,7 +142,7 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.textDescBlackSmall}>{item.timestamp}</Text>
         </View>
         <Badge status={item?.status} />
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -253,16 +210,6 @@ const HomeScreen = ({navigation}) => {
       <View style={styles.stockContainer}>
         <View style={styles.itemRow}>
           <Text style={styles.textTitleBlack}>Permintaan</Text>
-          {!requestList?.length ? null : (
-            <TouchableOpacity
-              style={styles.touchableFilter}
-              activeOpacity={0.6}
-              onPress={() => setFilter(filter == 'AB' ? 'BA' : 'AB')}>
-              <Text style={styles.textTitleBlue}>
-                {filter == 'AB' ? 'Terbaru-lama' : 'Terlama-baru'}
-              </Text>
-            </TouchableOpacity>
-          )}
         </View>
         {isLoading ? (
           <View style={{flex: 1, justifyContent: 'center'}}>
@@ -278,7 +225,7 @@ const HomeScreen = ({navigation}) => {
             {renderStatusFilter()}
             <FlatList
               contentContainerStyle={styles.list}
-              data={requestList}
+              data={filterIndexingList(requestList)}
               renderItem={({item, index}) => <RenderItem item={item} />}
             />
           </>

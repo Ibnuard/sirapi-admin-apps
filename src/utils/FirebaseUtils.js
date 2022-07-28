@@ -71,7 +71,17 @@ function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
 }
 
 const ADMIN_GET_ALL_REQUEST = () => {
-  return requestCollection.orderBy('timestamp').get();
+  return requestCollection.get();
+};
+
+const ADMIN_REJECT_REQUEST = id => {
+  return requestCollection.doc(id).update({
+    status: 'reject',
+  });
+};
+
+const ADMIN_GET_PRODUCT_DETAIL = id => {
+  return productCollection.doc(id).get();
 };
 
 const USER_CREATE_REQUEST = (product, requestData) => {
@@ -94,5 +104,7 @@ export {
   ADMIN_ON_DATA_ADDED,
   ADMIN_ON_DATA_UPDATED,
   ADMIN_GET_ALL_REQUEST,
+  ADMIN_REJECT_REQUEST,
+  ADMIN_GET_PRODUCT_DETAIL,
   USER_CREATE_REQUEST,
 };

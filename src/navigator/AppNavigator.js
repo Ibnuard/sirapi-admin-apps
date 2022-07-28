@@ -13,6 +13,7 @@ import ProductScreen from '../screens/Profile/screen';
 import AddProductScreen from '../screens/AddProduct';
 import {getIsTabBarVisible} from '../utils/Utils';
 import EditDeleteProductScreen from '../screens/EditDeleteProduct';
+import DetailProductScreen from '../screens/DetailProduct';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -68,6 +69,13 @@ export const HomeStack = () => {
         component={HomeScreen}
         options={{
           title: 'Dashboard',
+        }}
+      />
+      <Stack.Screen
+        name="ProductDetail"
+        component={DetailProductScreen}
+        options={{
+          title: 'Detail Permintaan',
         }}
       />
     </Stack.Navigator>
