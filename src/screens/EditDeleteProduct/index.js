@@ -18,7 +18,9 @@ import {
   ADMIN_DELETE_PRODUCT,
   ADMIN_ON_DATA_UPDATED,
   ADMIN_UPDATE_PRODUCT,
+  USER_CREATE_REQUEST,
 } from '../../utils/FirebaseUtils';
+import {randomNumber} from '../../utils/Utils';
 
 const EditDeleteProductScreen = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -133,6 +135,16 @@ const EditDeleteProductScreen = ({navigation, route}) => {
       });
   }
 
+  function createRequest() {
+    const requestData = {
+      requestName: 'Bapak Abdul',
+      requestQty: randomNumber(10, 50),
+    };
+    USER_CREATE_REQUEST(data, requestData).then(() => {
+      'request diterima';
+    });
+  }
+
   function handleModalButtonPress() {
     if (modalType == 'success') {
       setModalVisible(false);
@@ -204,6 +216,12 @@ const EditDeleteProductScreen = ({navigation, route}) => {
       </ScrollView>
 
       <View style={styles.bottomContainer}>
+        <Button
+          containerStyle={{marginBottom: 14}}
+          buttonStyle={{backgroundColor: Colors.COLOR_SECONDARY}}
+          title="Buat"
+          onPress={() => createRequest()}
+        />
         <Button
           containerStyle={{marginBottom: 14}}
           buttonStyle={{backgroundColor: Colors.COLOR_SECONDARY}}

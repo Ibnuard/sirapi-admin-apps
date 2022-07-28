@@ -1,8 +1,9 @@
 import moment from 'moment';
+import 'moment/locale/id';
 
 //get current datetime
 export const GET_CURRENT_DATETIME = (format = '') => {
-  return moment().format(format);
+  return moment().locale('id').format(format);
 };
 
 //handle tabbar visibility

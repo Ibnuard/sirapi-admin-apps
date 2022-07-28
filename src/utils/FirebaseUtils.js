@@ -1,7 +1,9 @@
 import firestore from '@react-native-firebase/firestore';
+import {GET_CURRENT_DATETIME, randomNumber} from './Utils';
 
 const productCollection = firestore().collection('Products');
 const reportCollection = firestore().collection('Reports');
+const requestCollection = firestore().collection('Request');
 
 const ADMIN_ADD_PRODUCT = (id, data) => {
   return productCollection.doc(id).set(data);
@@ -68,6 +70,21 @@ function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
   });
 }
 
+const ADMIN_GET_ALL_REQUEST = () => {
+  return requestCollection.orderBy('timestamp').get();
+};
+
+const USER_CREATE_REQUEST = (product, requestData) => {
+  const generateRequestId = `REQUEST${randomNumber(10000, 99999)}`;
+  return requestCollection.doc(generateRequestId).set({
+    product: product,
+    requester: requestData,
+    timestamp: GET_CURRENT_DATETIME('llll'),
+    status: 'pending',
+    requestId: generateRequestId,
+  });
+};
+
 export {
   ADMIN_ADD_PRODUCT,
   ADMIN_GET_ALL_PRODUCT,
@@ -76,4 +93,6 @@ export {
   ADMIN_GET_REPORT,
   ADMIN_ON_DATA_ADDED,
   ADMIN_ON_DATA_UPDATED,
+  ADMIN_GET_ALL_REQUEST,
+  USER_CREATE_REQUEST,
 };

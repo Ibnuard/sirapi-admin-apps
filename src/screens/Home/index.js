@@ -3,17 +3,24 @@ import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {Colors} from '../../styles';
 import Icon from 'react-native-vector-icons/Entypo';
 import {CustomText} from '../../components';
-import {ADMIN_GET_REPORT} from '../../utils/FirebaseUtils';
+import {
+  ADMIN_GET_ALL_REQUEST,
+  ADMIN_GET_REPORT,
+} from '../../utils/FirebaseUtils';
+import {ActivityIndicator} from 'react-native-paper';
 
 const HomeScreen = ({navigation}) => {
   const [filter, setFilter] = React.useState('AB');
   const [filterKey, setFilterKey] = React.useState('all'); // 'all' || 'pending' || 'success' || 'reject'
   const [report, setReport] = React.useState();
   const [reportError, setReportError] = React.useState(false);
+  const [requestList, setRequestList] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getProductReport();
+      getAllRequest();
     });
 
     return unsubscribe;
@@ -106,6 +113,24 @@ const HomeScreen = ({navigation}) => {
       });
   }
 
+  function getAllRequest() {
+    setIsLoading(true);
+    setRequestList([]);
+    ADMIN_GET_ALL_REQUEST().then(snapshot => {
+      if (snapshot.size > 0) {
+        let temp = [];
+        snapshot.forEach(doc => {
+          const data = doc?.data();
+          temp.push(data);
+        });
+        setRequestList(temp);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
+    });
+  }
+
   //render badge
   const Badge = ({status}) => {
     const _setConfig = () => {
@@ -134,8 +159,8 @@ const HomeScreen = ({navigation}) => {
       <View style={secondary ? styles.cardSecondary : styles.card}>
         <Icon name={icon} size={18} color={Colors.COLOR_WHITE} />
         <View style={{marginTop: 8}}>
-          <Text style={styles.textTitle}>{title ?? 'title'}</Text>
-          <Text style={styles.textDesc}>{desc ?? 'desc'}</Text>
+          <Text style={styles.textTitle}>{title ?? '...'}</Text>
+          <Text style={styles.textDesc}>{desc ?? '...'}</Text>
         </View>
       </View>
     );
@@ -146,12 +171,18 @@ const HomeScreen = ({navigation}) => {
     return (
       <View style={styles.listCard}>
         <View style={styles.defaultIcon}>
-          <Text style={styles.textTitleLarge}>{item?.qty}</Text>
+          <Text style={styles.textTitleLarge}>
+            {item?.requester?.requestQty}
+          </Text>
         </View>
         <View style={{flex: 1}}>
-          <Text style={styles.textTitleBlack}>{item?.barang}</Text>
-          <Text style={styles.textDescBlack}>permintaan oleh {item?.nama}</Text>
-          <Text style={styles.textDescBlackSmall}>{item.datetime}</Text>
+          <Text style={styles.textTitleBlack}>
+            {item?.product?.productName}
+          </Text>
+          <Text style={styles.textDescBlack}>
+            permintaan oleh {item?.requester?.requestName}
+          </Text>
+          <Text style={styles.textDescBlackSmall}>{item.timestamp}</Text>
         </View>
         <Badge status={item?.status} />
       </View>
@@ -222,25 +253,45 @@ const HomeScreen = ({navigation}) => {
       <View style={styles.stockContainer}>
         <View style={styles.itemRow}>
           <Text style={styles.textTitleBlack}>Permintaan</Text>
-          <TouchableOpacity
-            style={styles.touchableFilter}
-            activeOpacity={0.6}
-            onPress={() => setFilter(filter == 'AB' ? 'BA' : 'AB')}>
-            <Text style={styles.textTitleBlue}>
-              {filter == 'AB' ? 'Terbaru-lama' : 'Terlama-baru'}
-            </Text>
-          </TouchableOpacity>
+          {!requestList?.length ? null : (
+            <TouchableOpacity
+              style={styles.touchableFilter}
+              activeOpacity={0.6}
+              onPress={() => setFilter(filter == 'AB' ? 'BA' : 'AB')}>
+              <Text style={styles.textTitleBlue}>
+                {filter == 'AB' ? 'Terbaru-lama' : 'Terlama-baru'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
-        {renderStatusFilter()}
-        <FlatList
-          contentContainerStyle={styles.list}
-          data={testBarang}
-          renderItem={({item, index}) => <RenderItem item={item} />}
-        />
+        {isLoading ? (
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <ActivityIndicator />
+          </View>
+        ) : !requestList?.length ? (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={styles.textDescBlack}>Belum ada permintaan</Text>
+          </View>
+        ) : (
+          <>
+            {renderStatusFilter()}
+            <FlatList
+              contentContainerStyle={styles.list}
+              data={requestList}
+              renderItem={({item, index}) => <RenderItem item={item} />}
+            />
+          </>
+        )}
       </View>
     </View>
   );
 };
+
+{
+  /* 
+ ; */
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -283,6 +334,7 @@ const styles = StyleSheet.create({
   },
 
   stockContainer: {
+    flex: 1,
     marginTop: 18,
   },
 

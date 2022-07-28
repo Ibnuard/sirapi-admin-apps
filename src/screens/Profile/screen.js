@@ -32,9 +32,7 @@ const ProductScreen = ({navigation}) => {
       if (data.size > 0) {
         let temp = [];
         data?.forEach(doc => {
-          const datas = doc?.data();
           temp.push(doc.data());
-          console.log('DATA: ' + datas?.id);
         });
         setProducts(temp);
         setIsLoading(false);
