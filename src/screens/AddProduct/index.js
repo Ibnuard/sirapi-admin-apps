@@ -66,7 +66,7 @@ const AddProductScreen = ({navigation}) => {
       productName: inputName,
       productDescription: inputDescription,
       productCode: inputCode,
-      productQuantity: inputQty,
+      productQuantity: Number(inputQty),
       productPic: selectedImage,
     };
     ADMIN_ADD_PRODUCT(productID, data)

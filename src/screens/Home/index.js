@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.COLOR_WHITE,
-    padding: 24,
+    paddingHorizontal: 24,
   },
 
   card: {
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
 
   list: {
     marginTop: 8,
-    paddingBottom: 240,
+    paddingBottom: 60,
   },
 
   listCard: {

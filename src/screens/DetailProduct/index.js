@@ -130,6 +130,8 @@ const DetailProductScreen = ({navigation, route}) => {
       <View style={styles.bottomContainer}>
         {data?.status == 'reject' ? (
           <Button disabled title="Ditolak" />
+        ) : data?.status == 'success' ? (
+          <Button disabled title="Telah disetujui" />
         ) : (
           <>
             <Button
@@ -138,7 +140,17 @@ const DetailProductScreen = ({navigation, route}) => {
               title="Tolak Permintaan"
               onPress={() => onRejectButtonPressed()}
             />
-            <Button title="Scan untuk menyetujui" />
+            <Button
+              title="Scan untuk menyetujui"
+              onPress={() =>
+                navigation.navigate('ScanProduct', {
+                  requestId: data?.requestId,
+                  productId: productData?.productId,
+                  productCode: productDetail?.productCode,
+                  requestAmount: requestData?.requestQty,
+                })
+              }
+            />
           </>
         )}
       </View>

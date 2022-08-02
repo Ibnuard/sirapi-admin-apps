@@ -38,7 +38,7 @@ const EditDeleteProductScreen = ({navigation, route}) => {
     data?.productDescription,
   );
   const [inputCode, setInputCode] = React.useState(data?.productCode);
-  const [inputQty, setInputQty] = React.useState(data?.productQuantity);
+  const [inputQty, setInputQty] = React.useState(String(data?.productQuantity));
 
   function onMediaUploadButtonPress() {
     setModalType('mediaupload');
@@ -71,7 +71,7 @@ const EditDeleteProductScreen = ({navigation, route}) => {
 
   function deleteProduct() {
     setModalType('loading');
-    ADMIN_DELETE_PRODUCT(data?.productId)
+    ADMIN_DELETE_PRODUCT(data?.productQuantity, data?.productId)
       .then(() => {
         setModalType('success');
         setModalMessage('Data berhasil dihapus!');
@@ -90,7 +90,7 @@ const EditDeleteProductScreen = ({navigation, route}) => {
       productName: inputName,
       productDescription: inputDescription,
       productCode: inputCode,
-      productQuantity: inputQty,
+      productQuantity: Number(inputQty),
       productPic: selectedImage,
     };
 
@@ -219,7 +219,7 @@ const EditDeleteProductScreen = ({navigation, route}) => {
         <Button
           containerStyle={{marginBottom: 14}}
           buttonStyle={{backgroundColor: Colors.COLOR_SECONDARY}}
-          title="Buat"
+          title="Testing only buat permintaan"
           onPress={() => createRequest()}
         />
         <Button

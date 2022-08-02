@@ -1,5 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import {GET_CURRENT_DATETIME, randomNumber} from './Utils';
+import _ from 'lodash';
 
 const productCollection = firestore().collection('Products');
 const reportCollection = firestore().collection('Reports');
@@ -13,8 +14,10 @@ const ADMIN_GET_ALL_PRODUCT = () => {
   return productCollection.get();
 };
 
-const ADMIN_DELETE_PRODUCT = id => {
-  return productCollection.doc(id).delete();
+const ADMIN_DELETE_PRODUCT = (qty, id) => {
+  return ADMIN_ON_DATA_REMOVED(qty).then(() => {
+    return productCollection.doc(id).delete();
+  });
 };
 
 const ADMIN_UPDATE_PRODUCT = (id, data) => {
@@ -43,7 +46,7 @@ function ADMIN_ON_DATA_ADDED(qty) {
   });
 }
 
-function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
+function ADMIN_ON_DATA_REMOVED(qty) {
   return firestore().runTransaction(async transaction => {
     const reportRef = reportCollection.doc('Product');
     // Get post data first
@@ -51,6 +54,51 @@ function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
 
     if (!reportSnapshot.exists) {
       throw 'Post does not exist!';
+    }
+
+    transaction.update(reportRef, {
+      productIn: reportSnapshot.data().productIn - qty,
+      productTotal: reportSnapshot.data().productTotal - qty,
+      productAvailable: reportSnapshot.data().productAvailable - qty,
+    });
+  });
+}
+
+function ADMIN_ON_DATA_OUT(qty = 0, productId) {
+  return firestore().runTransaction(async transaction => {
+    const reportRef = reportCollection.doc('Product');
+    const productRef = productCollection.doc(productId);
+    // Get post data first
+    const reportSnapshot = await transaction.get(reportRef);
+    const productSnapshot = await transaction.get(productRef);
+
+    if (!reportSnapshot.exists) {
+      throw 'Report snap does not exist!';
+    }
+
+    if (!productSnapshot.exists) {
+      throw 'Product snap does not exist!';
+    }
+
+    transaction.update(reportRef, {
+      productAvailable: reportSnapshot.data().productAvailable - qty,
+      productOut: reportSnapshot.data().productOut + qty,
+    });
+
+    transaction.update(productRef, {
+      productQuantity: productSnapshot.data().productQuantity - qty,
+    });
+  });
+}
+
+function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
+  return firestore().runTransaction(async transaction => {
+    const reportRef = reportCollection.doc('Product');
+    // Get post data first
+    const reportSnapshot = await transaction.get(reportRef);
+
+    if (!reportSnapshot.exists) {
+      throw 'Product snap does not exist!';
     }
 
     transaction.update(reportRef, {
@@ -71,7 +119,7 @@ function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
 }
 
 const ADMIN_GET_ALL_REQUEST = () => {
-  return requestCollection.get();
+  return requestCollection.orderBy('datetime', 'asc').get();
 };
 
 const ADMIN_REJECT_REQUEST = id => {
@@ -84,12 +132,21 @@ const ADMIN_GET_PRODUCT_DETAIL = id => {
   return productCollection.doc(id).get();
 };
 
+const ADMIN_APPROVE_REQUEST = (requestId, productId, qty) => {
+  return ADMIN_ON_DATA_OUT(qty, productId).then(() => {
+    return requestCollection.doc(requestId).update({
+      status: 'success',
+    });
+  });
+};
+
 const USER_CREATE_REQUEST = (product, requestData) => {
   const generateRequestId = `REQUEST${randomNumber(10000, 99999)}`;
   return requestCollection.doc(generateRequestId).set({
     product: product,
     requester: requestData,
     timestamp: GET_CURRENT_DATETIME('llll'),
+    datetime: new Date(),
     status: 'pending',
     requestId: generateRequestId,
   });
@@ -106,5 +163,6 @@ export {
   ADMIN_GET_ALL_REQUEST,
   ADMIN_REJECT_REQUEST,
   ADMIN_GET_PRODUCT_DETAIL,
+  ADMIN_APPROVE_REQUEST,
   USER_CREATE_REQUEST,
 };

@@ -14,6 +14,7 @@ import AddProductScreen from '../screens/AddProduct';
 import {getIsTabBarVisible} from '../utils/Utils';
 import EditDeleteProductScreen from '../screens/EditDeleteProduct';
 import DetailProductScreen from '../screens/DetailProduct';
+import ScanProductScreen from '../screens/ScanProduct';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -76,6 +77,13 @@ export const HomeStack = () => {
         component={DetailProductScreen}
         options={{
           title: 'Detail Permintaan',
+        }}
+      />
+      <Stack.Screen
+        name="ScanProduct"
+        component={ScanProductScreen}
+        options={{
+          title: 'Scan',
         }}
       />
     </Stack.Navigator>
