@@ -30,7 +30,7 @@ const AddProductScreen = ({navigation}) => {
   const [inputName, setInputName] = React.useState('');
   const [inputDescription, setInputDescription] = React.useState('');
   const [inputCode, setInputCode] = React.useState('');
-  const [inputQty, setInputQty] = React.useState(0);
+  const [inputQty, setInputQty] = React.useState('');
 
   function onMediaUploadButtonPress() {
     setModalType('mediaupload');

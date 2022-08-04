@@ -1,10 +1,12 @@
 import firestore from '@react-native-firebase/firestore';
 import {GET_CURRENT_DATETIME, randomNumber} from './Utils';
 import _ from 'lodash';
+import {MONTH_LIST} from './Constants';
 
 const productCollection = firestore().collection('Products');
 const reportCollection = firestore().collection('Reports');
 const requestCollection = firestore().collection('Request');
+const reportDataCollection = firestore().collection('ReportData');
 
 const ADMIN_ADD_PRODUCT = (id, data) => {
   return productCollection.doc(id).set(data);
@@ -31,6 +33,7 @@ const ADMIN_GET_REPORT = () => {
 function ADMIN_ON_DATA_ADDED(qty) {
   return firestore().runTransaction(async transaction => {
     const reportRef = reportCollection.doc('Product');
+
     // Get post data first
     const reportSnapshot = await transaction.get(reportRef);
 
@@ -140,6 +143,7 @@ const ADMIN_APPROVE_REQUEST = (requestId, productId, qty) => {
   });
 };
 
+//USER
 const USER_CREATE_REQUEST = (product, requestData) => {
   const generateRequestId = `REQUEST${randomNumber(10000, 99999)}`;
   return requestCollection.doc(generateRequestId).set({

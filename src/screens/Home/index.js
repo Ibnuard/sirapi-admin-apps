@@ -2,7 +2,7 @@ import * as React from 'react';
 import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {Colors} from '../../styles';
 import Icon from 'react-native-vector-icons/Entypo';
-import {CustomText} from '../../components';
+import {Button, CustomText} from '../../components';
 import {
   ADMIN_GET_ALL_REQUEST,
   ADMIN_GET_REPORT,
@@ -207,6 +207,11 @@ const HomeScreen = ({navigation}) => {
           desc={'Total Barang'}
         />
       </View>
+      <Button
+        title="Lihat Laporan"
+        containerStyle={{marginTop: 8, borderRadius: 14}}
+        onPress={() => navigation.navigate('Report')}
+      />
       <View style={styles.stockContainer}>
         <View style={styles.itemRow}>
           <Text style={styles.textTitleBlack}>Permintaan</Text>

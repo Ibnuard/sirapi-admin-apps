@@ -11,6 +11,7 @@ import {ActivityIndicator} from 'react-native-paper';
 import {Button} from '../../components';
 import {Colors} from '../../styles';
 import {ADMIN_GET_ALL_PRODUCT} from '../../utils/FirebaseUtils';
+import {randomNumber} from '../../utils/Utils';
 
 const ProductScreen = ({navigation}) => {
   const [products, setProducts] = React.useState([]);
@@ -90,6 +91,7 @@ const ProductScreen = ({navigation}) => {
           </View>
         ) : (
           <FlatList
+            keyExtractor={(item, index) => index}
             data={products}
             renderItem={({item, index}) => <RenderItem item={item} />}
           />
