@@ -16,6 +16,7 @@ import {
   ADMIN_ADD_PRODUCT,
   ADMIN_DELETE_PRODUCT,
   ADMIN_ON_DATA_ADDED,
+  SEND_REPORT_DATA,
 } from '../../utils/FirebaseUtils';
 import {generateProductId} from '../../utils/Utils';
 
@@ -84,6 +85,21 @@ const AddProductScreen = ({navigation}) => {
     console.log('DO report....');
     const quantity = Number(qty);
     ADMIN_ON_DATA_ADDED(quantity)
+      .then(() => {
+        sendMonthlyReport(quantity);
+      })
+      .catch(err => {
+        deleteProduct(id);
+      });
+  }
+
+  function sendMonthlyReport(qty) {
+    const data = {
+      type: 'IN',
+      quantity: qty,
+    };
+
+    SEND_REPORT_DATA(data)
       .then(() => {
         setModalType('success');
         setModalMessage('Barang berhasil ditambahkan.');

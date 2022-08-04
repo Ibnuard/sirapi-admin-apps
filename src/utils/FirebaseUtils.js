@@ -156,6 +156,37 @@ const USER_CREATE_REQUEST = (product, requestData) => {
   });
 };
 
+//REPORT DATA
+const SEND_REPORT_DATA = data => {
+  const currentMonthNumber = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
+  const currentYear = GET_CURRENT_DATETIME().split('-')[0];
+  const month = MONTH_LIST(false)[currentMonthNumber];
+
+  return reportDataCollection
+    .doc(month.sub)
+    .collection('reports')
+    .add({...data, yearId: currentYear});
+};
+
+const GET_REPORT_DATA = month => {
+  return reportDataCollection
+    .doc(month)
+    .collection('reports')
+    .get()
+    .then(snapshot => {
+      let temp = [];
+      if (snapshot.size > 0) {
+        snapshot.forEach(doc => {
+          temp.push(doc.data());
+        });
+      }
+
+      console.log('TEMP : ' + JSON.stringify(temp));
+
+      return temp;
+    });
+};
+
 export {
   ADMIN_ADD_PRODUCT,
   ADMIN_GET_ALL_PRODUCT,
@@ -169,4 +200,6 @@ export {
   ADMIN_GET_PRODUCT_DETAIL,
   ADMIN_APPROVE_REQUEST,
   USER_CREATE_REQUEST,
+  SEND_REPORT_DATA,
+  GET_REPORT_DATA,
 };

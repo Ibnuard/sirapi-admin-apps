@@ -34,3 +34,27 @@ export const generateProductId = () => {
 
   return `SRP${randNumber}`;
 };
+
+const genArr = (data = []) => {
+  const resultTest = {};
+  const result = [];
+
+  data.forEach(item => {
+    if (resultTest[item?.yr]) {
+      const index = resultTest[item?.yr] - 1;
+      const foundItem = result[index];
+
+      const newValue = {
+        ...foundItem,
+        qt: foundItem.qt + item.qt,
+      };
+
+      result[index] = newValue;
+    } else {
+      resultTest[item.yr] = result.length + 1;
+      result.push(item);
+    }
+  });
+
+  console.log(result);
+};

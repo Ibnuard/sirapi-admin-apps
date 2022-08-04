@@ -5,6 +5,7 @@ import {MONTH_LIST} from '../../utils/Constants';
 import {GET_CURRENT_DATETIME} from '../../utils/Utils';
 import Icon from 'react-native-vector-icons/Entypo';
 import {ActivityIndicator} from 'react-native-paper';
+import {GET_REPORT_DATA, SEND_REPORT_DATA} from '../../utils/FirebaseUtils';
 
 const ReportScreen = () => {
   const MONTHS = MONTH_LIST(true);
@@ -12,6 +13,9 @@ const ReportScreen = () => {
 
   const [activeMonth, setActiveMonth] = React.useState(currentMonth);
   const [isLoading, setIsLaoding] = React.useState(false);
+
+  //SEND_REPORT_DATA();
+  GET_REPORT_DATA('Agu');
 
   const EX_REPORT = [
     {
