@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-import {GET_CURRENT_DATETIME, randomNumber} from './Utils';
+import {automateNumber, GET_CURRENT_DATETIME, randomNumber} from './Utils';
 import _ from 'lodash';
 import {MONTH_LIST} from './Constants';
 
@@ -7,6 +7,10 @@ const productCollection = firestore().collection('Products');
 const reportCollection = firestore().collection('Reports');
 const requestCollection = firestore().collection('Request');
 const reportDataCollection = firestore().collection('ReportData');
+
+//USER COLLECTION
+
+const userCollection = firestore().collection('Users');
 
 const ADMIN_ADD_PRODUCT = (id, data) => {
   return productCollection.doc(id).set(data);
@@ -156,6 +160,19 @@ const USER_CREATE_REQUEST = (product, requestData) => {
   });
 };
 
+const USER_REGISTER = async data => {
+  return await userCollection
+    .doc(data?.phoneNumber)
+    .get()
+    .then(snapshot => {
+      if (snapshot.exists) {
+        throw 'User Already Exist';
+      } else {
+        return userCollection.doc(data?.phoneNumber).set(data);
+      }
+    });
+};
+
 export {
   ADMIN_ADD_PRODUCT,
   ADMIN_GET_ALL_PRODUCT,
@@ -169,4 +186,5 @@ export {
   ADMIN_GET_PRODUCT_DETAIL,
   ADMIN_APPROVE_REQUEST,
   USER_CREATE_REQUEST,
+  USER_REGISTER,
 };

@@ -12,7 +12,6 @@ const Input = (
     value,
     onChangeText,
     placeholder = 'Enter text here!',
-    securedText = false,
     showEye = false,
     label = '',
     error = '',
@@ -34,7 +33,6 @@ const Input = (
         <TextInput
           style={TEXT_STYLE('normal', 'normal', styles.input)}
           placeholder={placeholder}
-          secureTextEntry={securedText}
           placeholderTextColor={Colors.COLOR_GRAY}
           value={value}
           onChangeText={val => onChangeText(val)}

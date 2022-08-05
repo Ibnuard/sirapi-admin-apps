@@ -16,13 +16,15 @@ import EditDeleteProductScreen from '../screens/EditDeleteProduct';
 import DetailProductScreen from '../screens/DetailProduct';
 import ScanProductScreen from '../screens/ScanProduct';
 import ReportScreen from '../screens/Report';
+import UserLoginScreen from '../screens/AuthUser';
+import UserSignupScreen from '../screens/AuthUserRegister';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export const InitStack = () => {
   return (
-    <Stack.Navigator initialRouteName={'Home'}>
+    <Stack.Navigator>
       <Stack.Screen
         name={'Auth'}
         component={AuthScreen}
@@ -123,6 +125,36 @@ export const ProductStack = () => {
         options={{
           title: 'Ubah Product',
         }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+//USER STACK NAVIGATOR
+
+export const InitUserStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name={'Auth'}
+        component={UserLoginScreen}
+        options={{
+          title: 'Masuk',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'AuthRegister'}
+        component={UserSignupScreen}
+        options={{
+          title: 'Daftar',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'Dashboard'}
+        component={TabStack}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
