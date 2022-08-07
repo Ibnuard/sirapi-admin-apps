@@ -20,6 +20,7 @@ const UserLoginScreen = ({route, navigation}) => {
         <Input
           placeholder={'Masukan 6 Pin'}
           maxLength={6}
+          keyboardType={'default'}
           secureTextEntry={true}
           onChangeText={text => setPassword(text)}
           value={password}

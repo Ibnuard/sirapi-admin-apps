@@ -1,4 +1,5 @@
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import _ from 'lodash';
 import moment from 'moment';
 import 'moment/locale/id';
 
@@ -52,3 +53,9 @@ export function validateEmail(email) {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return res.test(String(email).toLowerCase());
 }
+
+export const validatePIN = (pin = '') => {
+  const isnum = /^\d+$/.test(pin);
+
+  return isnum;
+};
