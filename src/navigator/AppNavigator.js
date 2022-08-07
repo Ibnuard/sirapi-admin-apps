@@ -21,6 +21,8 @@ import UserSignupScreen from '../screens/AuthUserRegister';
 import UserHomeScreen from '../screens/UserHome';
 import UserProductScreen from '../screens/UserProduct/screen';
 import RequestProductScreen from '../screens/CreateRequest';
+import UserProfileScreen from '../screens/UserPorfile';
+import SplashScreen from '../screens/Splash';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -135,6 +137,33 @@ export const ProductStack = () => {
 
 //USER STACK NAVIGATOR
 
+export const UserSplashStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name={'Splash'}
+        component={SplashScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'AuthFlow'}
+        component={InitUserStack}
+        options={{
+          title: 'Masuk',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'UserHomeFlow'}
+        component={UserHomeFlow}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
 export const InitUserStack = () => {
   return (
     <Stack.Navigator>
@@ -187,6 +216,7 @@ export const UserTabStack = () => {
         }}
       />
       <Tab.Screen name={'Product'} component={UserProductStack} />
+      <Tab.Screen name={'Profile'} component={UserProfileStack} />
     </Tab.Navigator>
   );
 };
@@ -251,6 +281,37 @@ export const UserProductStack = () => {
         options={{
           title: 'Detail Barang',
         }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const UserProfileStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ProfileInit"
+        component={UserProfileScreen}
+        options={{
+          title: 'Profile',
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const UserHomeFlow = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="UserTabFlow"
+        component={UserTabStack}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Auth"
+        component={InitUserStack}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );

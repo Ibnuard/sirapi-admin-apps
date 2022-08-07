@@ -69,6 +69,7 @@ const UserLoginScreen = ({route, navigation}) => {
       </View>
       <Button
         containerStyle={{marginTop: 24}}
+        disabled={!phoneNumber || !password}
         title={'Masuk'}
         onPress={() => onLoginButtonPressed()}
       />

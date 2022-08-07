@@ -8,6 +8,8 @@ const TabBarIcon = props => {
     iconName = props?.focused ? 'home' : 'home';
   } else if (props.route.name === 'Product') {
     iconName = props?.focused ? 'laptop' : 'laptop';
+  } else {
+    iconName = props?.focused ? 'user' : 'user';
   }
 
   return <AntDesign name={iconName} size={props?.size} color={props?.color} />;

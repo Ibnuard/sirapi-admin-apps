@@ -19,6 +19,8 @@ export const getIsTabBarVisible = route => {
       return true;
     case 'ProductInit':
       return true;
+    case 'ProfileInit':
+      return true;
     default:
       return false;
   }

@@ -15,7 +15,12 @@ import {
 } from 'react-native-paper';
 import merge from 'deepmerge';
 
-import {HomeStack, InitStack, InitUserStack} from './navigator/AppNavigator';
+import {
+  HomeStack,
+  InitStack,
+  InitUserStack,
+  UserSplashStack,
+} from './navigator/AppNavigator';
 import {PreferencesContext} from './context/Context';
 import {DARK_THEME, LIGHT_THEME} from './styles/Theme';
 
@@ -43,7 +48,7 @@ const App = () => {
     <PreferencesContext.Provider value={preferences}>
       <PaperProvider theme={theme}>
         <NavigationContainer theme={theme}>
-          <InitUserStack />
+          <UserSplashStack />
         </NavigationContainer>
       </PaperProvider>
     </PreferencesContext.Provider>
