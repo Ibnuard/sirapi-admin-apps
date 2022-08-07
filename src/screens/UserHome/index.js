@@ -9,15 +9,15 @@ import {
 } from '../../utils/FirebaseUtils';
 import {ActivityIndicator} from 'react-native-paper';
 import _ from 'lodash';
+import {retrieveUserSession} from '../../utils/UserUtils';
 
-const HomeScreen = ({navigation, route}) => {
+const UserHomeScreen = ({navigation, route}) => {
   const [filterKey, setFilterKey] = React.useState('all'); // 'all' || 'pending' || 'success' || 'reject'
   const [report, setReport] = React.useState();
   const [reportError, setReportError] = React.useState(false);
   const [requestList, setRequestList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-
-  const IS_USER = route?.params?.isUser;
+  const [user, setUser] = React.useState();
 
   console.log('User : ' + route?.params);
 
@@ -25,10 +25,18 @@ const HomeScreen = ({navigation, route}) => {
     const unsubscribe = navigation.addListener('focus', () => {
       getProductReport();
       getAllRequest();
+      getUserProfile();
     });
 
     return unsubscribe;
   }, [navigation]);
+
+  async function getUserProfile() {
+    const userSession = await retrieveUserSession();
+    const parseSession = JSON.parse(userSession);
+
+    setUser(parseSession);
+  }
 
   const filterStatus = [
     {
@@ -55,6 +63,12 @@ const HomeScreen = ({navigation, route}) => {
           return item.status == filterKey;
         })
       : list;
+  }
+
+  function filterByUserPhone(list = []) {
+    return list.filter(function (item) {
+      return item?.requester?.requestPhoneNumber == user?.phoneNumber;
+    });
   }
 
   function getProductReport() {
@@ -130,7 +144,9 @@ const HomeScreen = ({navigation, route}) => {
       <TouchableOpacity
         activeOpacity={0.8}
         style={styles.listCard}
-        onPress={() => navigation.navigate('ProductDetail', {data: item})}>
+        onPress={() =>
+          navigation.navigate('ProductDetail', {data: item, isUser: true})
+        }>
         <View style={styles.defaultIcon}>
           <Text style={styles.textTitleLarge}>
             {item?.requester?.requestQty}
@@ -185,41 +201,7 @@ const HomeScreen = ({navigation, route}) => {
   //MAIN RENDER
   return (
     <View style={styles.container}>
-      <View style={styles.row}>
-        <CardView
-          title={report?.productIn}
-          icon="arrow-bold-down"
-          secondary={true}
-          desc={'Barang Masuk'}
-        />
-        <CardView
-          title={report?.productOut}
-          icon="arrow-bold-up"
-          desc={'Barang Keluar'}
-        />
-      </View>
-      <View style={styles.row}>
-        <CardView
-          title={report?.productAvailable}
-          icon="circular-graph"
-          desc={'Barang Sisa'}
-        />
-        <CardView
-          title={report?.productTotal}
-          secondary
-          icon={'circle'}
-          desc={'Total Barang'}
-        />
-      </View>
-      <Button
-        title="Lihat Laporan"
-        containerStyle={{marginTop: 8, borderRadius: 14}}
-        onPress={() => navigation.navigate('Report')}
-      />
       <View style={styles.stockContainer}>
-        <View style={styles.itemRow}>
-          <Text style={styles.textTitleBlack}>Permintaan</Text>
-        </View>
         {isLoading ? (
           <View style={{flex: 1, justifyContent: 'center'}}>
             <ActivityIndicator />
@@ -233,8 +215,9 @@ const HomeScreen = ({navigation, route}) => {
           <>
             {renderStatusFilter()}
             <FlatList
+              keyExtractor={(item, index) => index}
               contentContainerStyle={styles.list}
-              data={filterIndexingList(requestList)}
+              data={filterIndexingList(filterByUserPhone(requestList))}
               renderItem={({item, index}) => <RenderItem item={item} />}
             />
           </>
@@ -434,4 +417,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default UserHomeScreen;

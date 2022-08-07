@@ -17,6 +17,7 @@ const DetailProductScreen = ({navigation, route}) => {
 
   const productData = data?.product;
   const requestData = data?.requester;
+  const isUser = route?.params?.isUser;
 
   const [productDetail, setProductDetail] = React.useState({
     productName: productData?.productName,
@@ -127,33 +128,35 @@ const DetailProductScreen = ({navigation, route}) => {
           </View>
         </>
       </ScrollView>
-      <View style={styles.bottomContainer}>
-        {data?.status == 'reject' ? (
-          <Button disabled title="Ditolak" />
-        ) : data?.status == 'success' ? (
-          <Button disabled title="Telah disetujui" />
-        ) : (
-          <>
-            <Button
-              buttonStyle={{backgroundColor: 'red'}}
-              containerStyle={{marginBottom: 8}}
-              title="Tolak Permintaan"
-              onPress={() => onRejectButtonPressed()}
-            />
-            <Button
-              title="Scan untuk menyetujui"
-              onPress={() =>
-                navigation.navigate('ScanProduct', {
-                  requestId: data?.requestId,
-                  productId: productData?.productId,
-                  productCode: productDetail?.productCode,
-                  requestAmount: requestData?.requestQty,
-                })
-              }
-            />
-          </>
-        )}
-      </View>
+      {!isUser && (
+        <View style={styles.bottomContainer}>
+          {data?.status == 'reject' ? (
+            <Button disabled title="Ditolak" />
+          ) : data?.status == 'success' ? (
+            <Button disabled title="Telah disetujui" />
+          ) : (
+            <>
+              <Button
+                buttonStyle={{backgroundColor: 'red'}}
+                containerStyle={{marginBottom: 8}}
+                title="Tolak Permintaan"
+                onPress={() => onRejectButtonPressed()}
+              />
+              <Button
+                title="Scan untuk menyetujui"
+                onPress={() =>
+                  navigation.navigate('ScanProduct', {
+                    requestId: data?.requestId,
+                    productId: productData?.productId,
+                    productCode: productDetail?.productCode,
+                    requestAmount: requestData?.requestQty,
+                  })
+                }
+              />
+            </>
+          )}
+        </View>
+      )}
       <BaseModal
         visible={modalVisible}
         type={modalType}

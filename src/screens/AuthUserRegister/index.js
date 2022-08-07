@@ -46,7 +46,7 @@ const UserSignupScreen = ({route, navigation}) => {
               setModalType('success');
             })
             .catch(err => {
-              if (err == 'User Already Exist') {
+              if (err == 'Pengguna sudah terdaftar!') {
                 setModalMessage('Pengguna sudah terdaftar!');
                 setModalType('warning');
               } else {

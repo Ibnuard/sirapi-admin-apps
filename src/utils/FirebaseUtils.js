@@ -166,11 +166,34 @@ const USER_REGISTER = async data => {
     .get()
     .then(snapshot => {
       if (snapshot.exists) {
-        throw 'User Already Exist';
+        throw 'Pengguna sudah terdaftar!';
       } else {
         return userCollection.doc(data?.phoneNumber).set(data);
       }
     });
+};
+
+const USER_LOGIN = async data => {
+  return await userCollection
+    .doc(data?.phoneNumber)
+    .get()
+    .then(snapshot => {
+      if (snapshot.exists) {
+        console.log(JSON.stringify(snapshot.data()));
+        return _checkPin(snapshot.data());
+      } else {
+        throw 'User tidak terdaftar!';
+      }
+    });
+
+  function _checkPin(snapshot) {
+    if (snapshot?.password == data?.pin) {
+      console.log('PIN CORRECT!');
+      return snapshot;
+    } else {
+      throw 'PIN Salah!';
+    }
+  }
 };
 
 export {
@@ -187,4 +210,5 @@ export {
   ADMIN_APPROVE_REQUEST,
   USER_CREATE_REQUEST,
   USER_REGISTER,
+  USER_LOGIN,
 };
