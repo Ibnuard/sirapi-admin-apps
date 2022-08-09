@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Alert} from 'react-native';
 
 //theme and navigation
 import {
@@ -23,6 +24,7 @@ import {
 } from './navigator/AppNavigator';
 import {PreferencesContext} from './context/Context';
 import {DARK_THEME, LIGHT_THEME} from './styles/Theme';
+import messaging from '@react-native-firebase/messaging';
 
 const CombinedDefaultTheme = merge(LIGHT_THEME, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(DARK_THEME, NavigationDarkTheme);
@@ -35,6 +37,14 @@ const App = () => {
   const toggleTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);
   }, [isThemeDark]);
+
+  // React.useEffect(() => {
+  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
+  //     Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  //   });
+
+  //   return unsubscribe;
+  // }, []);
 
   const preferences = React.useMemo(
     () => ({

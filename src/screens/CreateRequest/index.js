@@ -40,6 +40,7 @@ const RequestProductScreen = ({navigation, route}) => {
       requestDepartemen: parseJSON?.departemen,
       requestJabatan: parseJSON?.jabatan,
       requestQty: Number(quantity),
+      requestToken: parseJSON?.fcmToken,
     };
 
     if (Number(quantity) > data?.productQuantity) {

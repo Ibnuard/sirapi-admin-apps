@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {View, Text, StyleSheet, StatusBar} from 'react-native';
 import {retrieveUserSession} from '../../utils/UserUtils';
+import messaging from '@react-native-firebase/messaging';
 
 const SplashScreen = ({navigation}) => {
   React.useEffect(() => {

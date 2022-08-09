@@ -19,8 +19,6 @@ const UserHomeScreen = ({navigation, route}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [user, setUser] = React.useState();
 
-  console.log('User : ' + route?.params);
-
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getProductReport();
@@ -206,7 +204,7 @@ const UserHomeScreen = ({navigation, route}) => {
           <View style={{flex: 1, justifyContent: 'center'}}>
             <ActivityIndicator />
           </View>
-        ) : !requestList?.length ? (
+        ) : !filterIndexingList(filterByUserPhone(requestList))?.length ? (
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text style={styles.textDescBlack}>Belum ada permintaan</Text>

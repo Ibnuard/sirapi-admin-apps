@@ -11,6 +11,7 @@ import BaseModal from '../../components/Modal';
 import {Colors} from '../../styles';
 import {USER_REGISTER} from '../../utils/FirebaseUtils';
 import {automateNumber, validateEmail, validatePIN} from '../../utils/Utils';
+import messaging from '@react-native-firebase/messaging';
 
 const UserSignupScreen = ({route, navigation}) => {
   const [name, setName] = React.useState('');
@@ -23,6 +24,22 @@ const UserSignupScreen = ({route, navigation}) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalMessage, setModalMessage] = React.useState('');
   const [modalType, setModalType] = React.useState('loading');
+
+  const [fcmToken, setFCMToken] = React.useState('');
+
+  React.useEffect(() => {
+    getFCMToken();
+  }, []);
+
+  async function getFCMToken() {
+    //get fcm token
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
+
+    setFCMToken(token);
+
+    console.log('Token : ' + token);
+  }
 
   const onSignUpButtonPressed = async () => {
     setModalType('loading');
@@ -38,6 +55,7 @@ const UserSignupScreen = ({route, navigation}) => {
             departemen: departemen,
             phoneNumber: phoneNumber,
             password: password,
+            fcmToken: fcmToken,
           };
 
           await USER_REGISTER(data)
