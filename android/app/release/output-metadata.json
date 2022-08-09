@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.ardxclient.sirapiadmin",
+  "applicationId": "com.ardxclient.sirapi",
   "variantName": "processReleaseResources",
   "elements": [
     {

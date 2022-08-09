@@ -7,6 +7,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:628045364710:android:572c41503daf3b1e896a27",
+        "android_client_info": {
+          "package_name": "com.ardxclient.sirapi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628045364710-3adappk9qar6qsrb8f1n7jugdrob4m5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnAEGUPzzDUqapkKSiCP3uLDBAywFUjeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "628045364710-3adappk9qar6qsrb8f1n7jugdrob4m5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:628045364710:android:0bedc4e4cc4a43c1896a27",
         "android_client_info": {
           "package_name": "com.ardxclient.sirapiadmin"
