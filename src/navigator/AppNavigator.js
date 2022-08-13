@@ -23,6 +23,7 @@ import UserProductScreen from '../screens/UserProduct/screen';
 import RequestProductScreen from '../screens/CreateRequest';
 import UserProfileScreen from '../screens/UserPorfile';
 import SplashScreen from '../screens/Splash';
+import ForgotPinScreen from '../screens/ForgotPin';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -181,6 +182,14 @@ export const InitUserStack = () => {
         options={{
           title: 'Daftar',
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'ForgotPin'}
+        component={ForgotPinScreen}
+        options={{
+          title: 'Lupa PIN',
+          headerShown: true,
         }}
       />
       <Stack.Screen

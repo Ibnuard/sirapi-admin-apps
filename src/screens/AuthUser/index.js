@@ -67,6 +67,11 @@ const UserLoginScreen = ({route, navigation}) => {
           value={password}
         />
       </View>
+      <TouchableOpacity
+        style={{alignSelf: 'flex-end', marginVertical: 12}}
+        onPress={() => navigation.navigate('ForgotPin')}>
+        <Text style={styles.textDaftar}>Lupa PIN?</Text>
+      </TouchableOpacity>
       <Button
         containerStyle={{marginTop: 24}}
         disabled={!phoneNumber || !password}

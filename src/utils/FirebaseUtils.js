@@ -196,6 +196,26 @@ const USER_LOGIN = async data => {
   }
 };
 
+const USER_DETAIL = async data => {
+  return await userCollection
+    .doc(data?.phoneNumber)
+    .get()
+    .then(snapshot => {
+      if (snapshot.exists) {
+        console.log(JSON.stringify(snapshot.data()));
+        return snapshot.data();
+      } else {
+        throw 'User tidak terdaftar!';
+      }
+    });
+};
+
+const USER_UPDATE_PIN = async data => {
+  return await userCollection.doc(data?.phoneNumber).update({
+    password: data?.pin,
+  });
+};
+
 export {
   ADMIN_ADD_PRODUCT,
   ADMIN_GET_ALL_PRODUCT,
@@ -211,4 +231,6 @@ export {
   USER_CREATE_REQUEST,
   USER_REGISTER,
   USER_LOGIN,
+  USER_DETAIL,
+  USER_UPDATE_PIN,
 };

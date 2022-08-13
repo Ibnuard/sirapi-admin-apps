@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, StatusBar} from 'react-native';
+import {View, Text, StyleSheet, StatusBar, Image} from 'react-native';
 import {retrieveUserSession} from '../../utils/UserUtils';
 import messaging from '@react-native-firebase/messaging';
 
@@ -41,7 +41,11 @@ const SplashScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <Text style={styles.textTitle}>Sirapi</Text>
+      <Image
+        source={require('../../../assets/images/logo.png')}
+        resizeMode={'contain'}
+        style={{width: 100, height: 100}}
+      />
     </View>
   );
 };

@@ -61,3 +61,11 @@ export const validatePIN = (pin = '') => {
 
   return isnum;
 };
+
+export function cencorNumber(number = '') {
+  const getNumberLength = number.length - 4;
+  const result = number.slice(getNumberLength, number.length);
+  const enc = number.slice(0, getNumberLength);
+
+  return {key: result, encryptedNumber: `${enc}XXXX`};
+}
