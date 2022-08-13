@@ -74,10 +74,9 @@ const AddProductScreen = ({navigation}) => {
       .then(() => {
         doReport(inputQty, productID);
       })
-      .catch(e => {
+      .catch(err => {
         setModalType('warning');
-        setModalMessage('Barang gagal ditambahkan!');
-        console.log('Write Failed : ' + e.message);
+        setModalMessage('Barang gagal ditambahkan! ' + err);
       });
   };
 
@@ -86,26 +85,11 @@ const AddProductScreen = ({navigation}) => {
     const quantity = Number(qty);
     ADMIN_ON_DATA_ADDED(quantity)
       .then(() => {
-        sendMonthlyReport(quantity);
-      })
-      .catch(err => {
-        deleteProduct(id);
-      });
-  }
-
-  function sendMonthlyReport(qty) {
-    const data = {
-      type: 'IN',
-      quantity: qty,
-    };
-
-    SEND_REPORT_DATA(data)
-      .then(() => {
         setModalType('success');
         setModalMessage('Barang berhasil ditambahkan.');
-        console.log('report Success');
       })
       .catch(err => {
+        console.log('Report error : ' + err);
         deleteProduct(id);
       });
   }
