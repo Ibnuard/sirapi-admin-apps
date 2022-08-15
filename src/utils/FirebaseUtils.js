@@ -7,6 +7,7 @@ const productCollection = firestore().collection('Products');
 const reportCollection = firestore().collection('Reports');
 const requestCollection = firestore().collection('Request');
 const reportDataCollection = firestore().collection('ReportData').doc('Month');
+const notificationCollection = firestore().collection('AdminToken');
 
 const ADMIN_ADD_PRODUCT = (id, data) => {
   return productCollection.doc(id).set(data);
@@ -227,6 +228,30 @@ const GET_REPORT_DATA = month => {
   return reportDataCollection.collection(month).get();
 };
 
+//NOTIFICATION
+const SAVE_ADMIN_TOKEN = (token = '') => {
+  const tokenId = token.slice(0, 10);
+  return notificationCollection.doc(tokenId).set({
+    token: token,
+  });
+};
+
+const GET_ADMIN_TOKEN = () => {
+  return notificationCollection.get().then(snapshot => {
+    let temp = [];
+    if (snapshot.size > 0) {
+      snapshot.forEach(data => {
+        const datas = data.data();
+        temp.push(datas);
+      });
+
+      return temp;
+    } else {
+      console.log('Not Exist');
+    }
+  });
+};
+
 export {
   ADMIN_ADD_PRODUCT,
   ADMIN_GET_ALL_PRODUCT,
@@ -242,4 +267,6 @@ export {
   USER_CREATE_REQUEST,
   CREATE_REPORT_DATA,
   GET_REPORT_DATA,
+  SAVE_ADMIN_TOKEN,
+  GET_ADMIN_TOKEN,
 };

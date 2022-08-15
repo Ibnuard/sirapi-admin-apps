@@ -1,12 +1,29 @@
 import * as React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Button, Input} from '../../components';
+import messaging from '@react-native-firebase/messaging';
+import {GET_ADMIN_TOKEN, SAVE_ADMIN_TOKEN} from '../../utils/FirebaseUtils';
 
 const AuthScreen = ({navigation}) => {
   const [code, setCode] = React.useState('');
   const [isError, setIsError] = React.useState(false);
 
   const ADMIN_CODE = '1234';
+
+  React.useEffect(async () => {
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
+
+    SAVE_ADMIN_TOKEN(token).then(() => {
+      console.log('Token saved!!');
+    });
+
+    // GET_ADMIN_TOKEN().then(data => {
+    //   console.log('data : ' + JSON.stringify(data));
+    // });
+
+    // console.log('Token : ' + token);
+  }, []);
 
   const checkAdminCode = () => {
     if (ADMIN_CODE == code) {
