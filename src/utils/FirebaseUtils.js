@@ -7,6 +7,7 @@ const productCollection = firestore().collection('Products');
 const reportCollection = firestore().collection('Reports');
 const requestCollection = firestore().collection('Request');
 const reportDataCollection = firestore().collection('ReportData');
+const notificationCollection = firestore().collection('AdminToken');
 
 //USER COLLECTION
 
@@ -216,6 +217,23 @@ const USER_UPDATE_PIN = async data => {
   });
 };
 
+//NOTIF
+const GET_ADMIN_TOKEN = () => {
+  return notificationCollection.get().then(snapshot => {
+    let temp = [];
+    if (snapshot.size > 0) {
+      snapshot.forEach(data => {
+        const datas = data.data();
+        temp.push(datas?.token);
+      });
+
+      return temp;
+    } else {
+      console.log('Not Exist');
+    }
+  });
+};
+
 export {
   ADMIN_ADD_PRODUCT,
   ADMIN_GET_ALL_PRODUCT,
@@ -233,4 +251,5 @@ export {
   USER_LOGIN,
   USER_DETAIL,
   USER_UPDATE_PIN,
+  GET_ADMIN_TOKEN,
 };

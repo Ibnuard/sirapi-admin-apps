@@ -2,6 +2,7 @@ import * as React from 'react';
 import {View, Text, StyleSheet, StatusBar, Image} from 'react-native';
 import {retrieveUserSession} from '../../utils/UserUtils';
 import messaging from '@react-native-firebase/messaging';
+import {GET_ADMIN_TOKEN} from '../../utils/FirebaseUtils';
 
 const SplashScreen = ({navigation}) => {
   React.useEffect(() => {

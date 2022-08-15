@@ -12,8 +12,8 @@ import {Button, Input} from '../../components';
 import BaseModal from '../../components/Modal';
 import {Colors} from '../../styles';
 import Icon from 'react-native-vector-icons/Entypo';
-import {USER_CREATE_REQUEST} from '../../utils/FirebaseUtils';
-import {randomNumber} from '../../utils/Utils';
+import {GET_ADMIN_TOKEN, USER_CREATE_REQUEST} from '../../utils/FirebaseUtils';
+import {randomNumber, sendNotificationToAdmin} from '../../utils/Utils';
 import {retrieveUserSession} from '../../utils/UserUtils';
 
 const RequestProductScreen = ({navigation, route}) => {
@@ -27,6 +27,7 @@ const RequestProductScreen = ({navigation, route}) => {
   const data = route?.params?.data;
 
   async function createRequest() {
+    console.log('Creating request...');
     setModalType('loading');
     setModalVisible(true);
 
@@ -43,6 +44,8 @@ const RequestProductScreen = ({navigation, route}) => {
       requestToken: parseJSON?.fcmToken,
     };
 
+    console.log('DATA : ' + JSON.stringify(requestData));
+
     if (Number(quantity) > data?.productQuantity) {
       setModalMessage(
         'Jumlah permintaan tidak boleh lebih dari ketersedian barang!',
@@ -51,12 +54,35 @@ const RequestProductScreen = ({navigation, route}) => {
     } else {
       USER_CREATE_REQUEST(data, requestData)
         .then(() => {
+          sendNotification(requestData?.requestName, requestData?.requestQty);
           setModalMessage('Permintaan penarikan berhasil dikirim!');
           setModalType('success');
         })
         .catch(err => {
-          setModalMessage('Permintaab penarikan gagal!');
+          console.log('Err : ' + err);
+          setModalMessage('Permintaan penarikan gagal!');
           setModalType('warning');
+        });
+    }
+  }
+
+  async function sendNotification(requesterName, requestQty) {
+    await GET_ADMIN_TOKEN().then(tokens => {
+      _sendNotif(tokens);
+    });
+
+    async function _sendNotif(tokens) {
+      await sendNotificationToAdmin(
+        tokens,
+        data?.productName,
+        requesterName,
+        requestQty,
+      )
+        .then(() => {
+          console.log('Notif sent');
+        })
+        .catch(err => {
+          console.log('Notif failed to sent!');
         });
     }
   }
