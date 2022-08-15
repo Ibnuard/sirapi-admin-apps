@@ -5,6 +5,7 @@ import BaseModal from '../../components/Modal';
 import {Colors} from '../../styles';
 import {USER_LOGIN} from '../../utils/FirebaseUtils';
 import {storeUserSession} from '../../utils/UserUtils';
+import {automateNumber} from '../../utils/Utils';
 
 const UserLoginScreen = ({route, navigation}) => {
   const [phoneNumber, setPhoneNumber] = React.useState('');
@@ -19,30 +20,35 @@ const UserLoginScreen = ({route, navigation}) => {
     setModalType('loading');
     setModalVisible(true);
 
-    const data = {
-      phoneNumber: phoneNumber,
-      pin: password,
-    };
+    if (automateNumber(phoneNumber)) {
+      const data = {
+        phoneNumber: phoneNumber,
+        pin: password,
+      };
 
-    await USER_LOGIN(data)
-      .then(data => {
-        setModalVisible(false);
-        storeUserSession(data).then(() => {
-          navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: 'UserHome',
-              },
-            ],
+      await USER_LOGIN(data)
+        .then(data => {
+          setModalVisible(false);
+          storeUserSession(data).then(() => {
+            navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: 'UserHome',
+                },
+              ],
+            });
           });
+        })
+        .catch(error => {
+          setModalMessage(error);
+          setModalType('warning');
+          console.log('Error : ' + error);
         });
-      })
-      .catch(error => {
-        setModalMessage(error);
-        setModalType('warning');
-        console.log('Error : ' + error);
-      });
+    } else {
+      setModalMessage('Format nomor telpon harus 628XXX');
+      setModalType('warning');
+    }
   };
 
   return (
