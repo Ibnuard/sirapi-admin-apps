@@ -6,7 +6,7 @@ import {MONTH_LIST} from './Constants';
 const productCollection = firestore().collection('Products');
 const reportCollection = firestore().collection('Reports');
 const requestCollection = firestore().collection('Request');
-const reportDataCollection = firestore().collection('ReportData');
+const reportDataCollection = firestore().collection('ReportData').doc('Month');
 
 const ADMIN_ADD_PRODUCT = (id, data) => {
   return productCollection.doc(id).set(data);
@@ -39,9 +39,8 @@ function ADMIN_ON_DATA_ADDED(qty) {
 
     const reportRef = reportCollection.doc('Product');
     const reportDataRef = reportDataCollection
-      .doc(month.sub)
-      .collection(currentYear)
-      .doc('reports');
+      .collection(month.sub)
+      .doc(currentYear);
 
     // Get post data first
     const reportSnapshot = await transaction.get(reportRef);
@@ -97,9 +96,8 @@ function ADMIN_ON_DATA_OUT(qty = 0, productId) {
     const month = MONTH_LIST(false)[currentMonthNumber];
 
     const reportDataRef = reportDataCollection
-      .doc(month.sub)
-      .collection(currentYear)
-      .doc('reports');
+      .collection(month.sub)
+      .doc(currentYear);
     const reportRef = reportCollection.doc('Product');
     const productRef = productCollection.doc(productId);
 
@@ -139,9 +137,8 @@ function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
 
     const reportRef = reportCollection.doc('Product');
     const reportDataRef = reportDataCollection
-      .doc(month.sub)
-      .collection(currentYear)
-      .doc('reports');
+      .collection(month.sub)
+      .doc(currentYear);
 
     // Get post data first
     const reportSnapshot = await transaction.get(reportRef);
@@ -225,22 +222,8 @@ const CREATE_REPORT_DATA = data => {
 };
 
 const GET_REPORT_DATA = month => {
-  return reportDataCollection
-    .doc(month)
-    .collection('reports')
-    .get()
-    .then(snapshot => {
-      let temp = [];
-      if (snapshot.size > 0) {
-        snapshot.forEach(doc => {
-          temp.push(doc.data());
-        });
-      }
-
-      console.log('TEMP : ' + JSON.stringify(temp));
-
-      return temp;
-    });
+  const currentYear = GET_CURRENT_DATETIME().split('-')[0];
+  return reportDataCollection.doc(month).get();
 };
 
 export {

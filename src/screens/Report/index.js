@@ -15,7 +15,13 @@ const ReportScreen = () => {
   const [isLoading, setIsLaoding] = React.useState(false);
 
   //SEND_REPORT_DATA();
-  GET_REPORT_DATA('Agu');
+  GET_REPORT_DATA('Agu').then(snapshot => {
+    if (snapshot.exists) {
+      console.log('Exist');
+    } else {
+      console.log('Not Exist');
+    }
+  });
 
   const EX_REPORT = [
     {
