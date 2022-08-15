@@ -8,7 +8,7 @@ const AuthScreen = ({navigation}) => {
   const [code, setCode] = React.useState('');
   const [isError, setIsError] = React.useState(false);
 
-  const ADMIN_CODE = '1234';
+  const ADMIN_CODE = 'ADMIN9896';
 
   React.useEffect(async () => {
     await messaging().registerDeviceForRemoteMessages();
