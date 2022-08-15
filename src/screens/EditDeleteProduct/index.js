@@ -216,12 +216,12 @@ const EditDeleteProductScreen = ({navigation, route}) => {
       </ScrollView>
 
       <View style={styles.bottomContainer}>
-        <Button
+        {/* <Button
           containerStyle={{marginBottom: 14}}
           buttonStyle={{backgroundColor: Colors.COLOR_SECONDARY}}
           title="Testing only buat permintaan"
           onPress={() => createRequest()}
-        />
+        /> */}
         <Button
           containerStyle={{marginBottom: 14}}
           buttonStyle={{backgroundColor: Colors.COLOR_SECONDARY}}
