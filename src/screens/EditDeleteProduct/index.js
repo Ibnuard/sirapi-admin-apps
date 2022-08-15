@@ -138,7 +138,7 @@ const EditDeleteProductScreen = ({navigation, route}) => {
   function createRequest() {
     const requestData = {
       requestName: 'Bapak Abdul',
-      requestQty: randomNumber(10, 50),
+      requestQty: randomNumber(1, Number(data?.productQuantity)),
     };
     USER_CREATE_REQUEST(data, requestData).then(() => {
       'request diterima';

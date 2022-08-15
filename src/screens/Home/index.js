@@ -26,6 +26,11 @@ const HomeScreen = ({navigation}) => {
     return unsubscribe;
   }, [navigation]);
 
+  // ADMIN_GET_REPORT().onSnapshot(snapshot => {
+  //   const data = snapshot.data();
+  //   setReport(data);
+  // });
+
   const filterStatus = [
     {
       type: 'all',
@@ -62,6 +67,9 @@ const HomeScreen = ({navigation}) => {
       .catch(() => {
         setReportError(true);
       });
+    // ADMIN_GET_REPORT().onSnapshot(snapshot => {
+    //   console.log('DS : ' + JSON.stringify(snapshot.data()));
+    // });
   }
 
   function getAllRequest() {

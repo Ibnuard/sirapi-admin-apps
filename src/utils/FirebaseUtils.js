@@ -27,6 +27,7 @@ const ADMIN_UPDATE_PRODUCT = (id, data) => {
 };
 
 const ADMIN_GET_REPORT = () => {
+  //  return reportCollection.doc('Product').get();
   return reportCollection.doc('Product').get();
 };
 
@@ -37,7 +38,10 @@ function ADMIN_ON_DATA_ADDED(qty) {
     const month = MONTH_LIST(false)[currentMonthNumber];
 
     const reportRef = reportCollection.doc('Product');
-    const reportDataRef = reportDataCollection.doc('Agu');
+    const reportDataRef = reportDataCollection
+      .doc(month.sub)
+      .collection(currentYear)
+      .doc('reports');
 
     // Get post data first
     const reportSnapshot = await transaction.get(reportRef);
@@ -47,13 +51,12 @@ function ADMIN_ON_DATA_ADDED(qty) {
       throw 'Post does not exist!';
     }
 
-    if (!reportDataRef.exists) {
-      console.log('Ref not exist! : ' + month.sub + currentYear);
-      const data = {
-        in: qty,
-        out: 0,
-      };
-      await CREATE_REPORT_DATA(data);
+    if (!reportDataSnapshot.exists) {
+      console.log('Ref not exist!');
+      transaction.set(reportDataRef, {
+        productIn: qty,
+        productOut: 0,
+      });
     } else {
       console.log('Ref exist!');
       transaction.update(reportDataRef, {
@@ -89,11 +92,21 @@ function ADMIN_ON_DATA_REMOVED(qty) {
 
 function ADMIN_ON_DATA_OUT(qty = 0, productId) {
   return firestore().runTransaction(async transaction => {
+    const currentMonthNumber = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
+    const currentYear = GET_CURRENT_DATETIME().split('-')[0];
+    const month = MONTH_LIST(false)[currentMonthNumber];
+
+    const reportDataRef = reportDataCollection
+      .doc(month.sub)
+      .collection(currentYear)
+      .doc('reports');
     const reportRef = reportCollection.doc('Product');
     const productRef = productCollection.doc(productId);
+
     // Get post data first
     const reportSnapshot = await transaction.get(reportRef);
     const productSnapshot = await transaction.get(productRef);
+    const reportDataSnapshot = await transaction.get(reportDataRef);
 
     if (!reportSnapshot.exists) {
       throw 'Report snap does not exist!';
@@ -102,6 +115,10 @@ function ADMIN_ON_DATA_OUT(qty = 0, productId) {
     if (!productSnapshot.exists) {
       throw 'Product snap does not exist!';
     }
+
+    transaction.update(reportDataRef, {
+      productOut: reportDataSnapshot.data().productOut + qty,
+    });
 
     transaction.update(reportRef, {
       productAvailable: reportSnapshot.data().productAvailable - qty,
@@ -116,13 +133,27 @@ function ADMIN_ON_DATA_OUT(qty = 0, productId) {
 
 function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
   return firestore().runTransaction(async transaction => {
+    const currentMonthNumber = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
+    const currentYear = GET_CURRENT_DATETIME().split('-')[0];
+    const month = MONTH_LIST(false)[currentMonthNumber];
+
     const reportRef = reportCollection.doc('Product');
+    const reportDataRef = reportDataCollection
+      .doc(month.sub)
+      .collection(currentYear)
+      .doc('reports');
+
     // Get post data first
     const reportSnapshot = await transaction.get(reportRef);
+    const reportDataSnapshot = await transaction.get(reportDataRef);
 
     if (!reportSnapshot.exists) {
       throw 'Product snap does not exist!';
     }
+
+    transaction.update(reportDataRef, {
+      productIn: reportDataSnapshot.data().productIn + dif,
+    });
 
     transaction.update(reportRef, {
       productIn:
