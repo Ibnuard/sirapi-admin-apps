@@ -55,6 +55,7 @@ function ADMIN_ON_DATA_ADDED(qty) {
       transaction.set(reportDataRef, {
         productIn: qty,
         productOut: 0,
+        yearId: currentYear,
       });
     } else {
       console.log('Ref exist!');
@@ -223,7 +224,7 @@ const CREATE_REPORT_DATA = data => {
 
 const GET_REPORT_DATA = month => {
   const currentYear = GET_CURRENT_DATETIME().split('-')[0];
-  return reportDataCollection.doc(month).get();
+  return reportDataCollection.collection(month).get();
 };
 
 export {

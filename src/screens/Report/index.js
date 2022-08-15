@@ -12,65 +12,35 @@ const ReportScreen = () => {
   const currentMonth = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
 
   const [activeMonth, setActiveMonth] = React.useState(currentMonth);
-  const [isLoading, setIsLaoding] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  //SEND_REPORT_DATA();
-  GET_REPORT_DATA('Agu').then(snapshot => {
-    if (snapshot.exists) {
-      console.log('Exist');
-    } else {
-      console.log('Not Exist');
-    }
-  });
+  const [report, setReport] = React.useState([]);
 
-  const EX_REPORT = [
-    {
-      id: 0,
-      report: [
-        {
-          year: 2022,
-          productIn: 200,
-          productOut: 1000,
-        },
-      ],
-    },
-    {
-      id: 1,
-      report: [
-        {
-          year: 2022,
-          productIn: 3200,
-          productOut: 800,
-        },
-      ],
-    },
-    {
-      id: 2,
-      report: [
-        {
-          year: 2022,
-          productIn: 900,
-          productOut: 200,
-        },
-      ],
-    },
-    {
-      id: 7,
-      report: [
-        {
-          year: 2022,
-          productIn: 300,
-          productOut: 100,
-        },
+  React.useEffect(() => {
+    getMonthlyReport();
+  }, [activeMonth]);
 
-        {
-          year: 2021,
-          productIn: 300,
-          productOut: 100,
-        },
-      ],
-    },
-  ];
+  function getMonthlyReport() {
+    setIsLoading(true);
+    const month = MONTH_LIST(false)[activeMonth];
+    console.log('Update month report....' + month.sub);
+    //SEND_REPORT_DATA();
+    setReport([]);
+    GET_REPORT_DATA(month.sub).then(snapshot => {
+      if (snapshot.size > 0) {
+        let temp = [];
+        snapshot.forEach(data => {
+          const datas = data.data();
+          temp.push(datas);
+        });
+        setReport(temp);
+        setIsLoading(false);
+        console.log('DATA : ' + JSON.stringify(temp));
+      } else {
+        setIsLoading(false);
+      }
+    });
+  }
 
   const filterReportByCurrentMonth = (data = []) => {
     return data.filter(function (item) {
@@ -96,50 +66,40 @@ const ReportScreen = () => {
 
   function renderCardReport(item, index) {
     return (
-      <View>
-        {item?.report?.map((item, index) => {
-          return (
-            <View style={styles.card}>
-              <Text style={styles.textYear}>{item?.year}</Text>
-              <View style={{flexDirection: 'row'}}>
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: Colors.COLOR_SECONDARY,
-                    borderRadius: 12,
-                    padding: 4,
-                    margin: 4,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <Icon
-                    name={'arrow-bold-down'}
-                    size={18}
-                    color={Colors.COLOR_WHITE}
-                  />
-                  <Text style={styles.textCount}>{item?.productIn}</Text>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: Colors.COLOR_PRIMARY,
-                    borderRadius: 12,
-                    padding: 4,
-                    margin: 4,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <Icon
-                    name={'arrow-bold-up'}
-                    size={18}
-                    color={Colors.COLOR_WHITE}
-                  />
-                  <Text style={styles.textCount}>{item?.productIn}</Text>
-                </View>
-              </View>
-            </View>
-          );
-        })}
+      <View style={styles.card}>
+        <Text style={styles.textYear}>{item?.yearId}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: Colors.COLOR_SECONDARY,
+              borderRadius: 12,
+              padding: 4,
+              margin: 4,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Icon
+              name={'arrow-bold-down'}
+              size={18}
+              color={Colors.COLOR_WHITE}
+            />
+            <Text style={styles.textCount}>{item?.productIn}</Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: Colors.COLOR_PRIMARY,
+              borderRadius: 12,
+              padding: 4,
+              margin: 4,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Icon name={'arrow-bold-up'} size={18} color={Colors.COLOR_WHITE} />
+            <Text style={styles.textCount}>{item?.productIn}</Text>
+          </View>
+        </View>
       </View>
     );
   }
@@ -158,10 +118,10 @@ const ReportScreen = () => {
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator />
         </View>
-      ) : filterReportByCurrentMonth(EX_REPORT).length ? (
+      ) : report.length ? (
         <View style={styles.content}>
           <FlatList
-            data={filterReportByCurrentMonth(EX_REPORT)}
+            data={report}
             renderItem={({item, index}) => renderCardReport(item, index)}
           />
         </View>
