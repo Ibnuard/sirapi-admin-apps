@@ -61,26 +61,27 @@ const genArr = (data = []) => {
 
 export async function sendNotificationToUser(token, title, message) {
   await fetch('https://fcm.googleapis.com/fcm/send', {
+    method: 'POST',
     headers: {
       Authorization:
         'key=AAAAkjprveY:APA91bEjH_FBKF33FlIZOuI8O4j7GLw390wZ0fH3Vqtl1GzNGPn1nlo5Yal3xurPKPhknaluw6Fh3uYNDOT08UYKB8C7WAIKryP5DGphzjUV8apGpT03EM95hKhBJK1qDOlQW7Zs3VwE',
-      'Content-Type': 'application/json,',
+      'Content-Type': 'application/json',
     },
-    body: {
-      registration_ids: token,
+    body: JSON.stringify({
+      registration_ids: [token],
       notification: {
         title: title,
         body: message,
         image: '',
       },
       data: {},
-    },
+    }),
   })
     .then(response => response.json())
     .then(responseJson => {
       console.log('Sukses : ' + JSON.stringify(responseJson));
     })
     .catch(err => {
-      console.log('Gagal : ' + JSON.stringify(err));
+      console.log('Gagal : ' + err);
     });
 }

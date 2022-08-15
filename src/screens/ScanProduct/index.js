@@ -6,12 +6,15 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
 import BaseModal from '../../components/Modal';
 import {ADMIN_APPROVE_REQUEST} from '../../utils/FirebaseUtils';
+import {sendNotificationToUser} from '../../utils/Utils';
 
 const ScanProductScreen = ({route, navigation}) => {
   const requestId = route?.params?.requestId;
   const productId = route?.params?.productId;
   const productCode = route?.params?.productCode;
   const requestQty = route?.params?.requestAmount;
+  const productName = route?.params?.productName;
+  const requesToken = route?.params?.requestToken;
 
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalMessage, setModalMessage] = React.useState('');
@@ -35,6 +38,7 @@ const ScanProductScreen = ({route, navigation}) => {
   function onProductScanned() {
     ADMIN_APPROVE_REQUEST(requestId, productId, requestQty)
       .then(() => {
+        sendNotif();
         setModalMessage('Permintaan berhasil disetujui!');
         setModalType('success');
       })
@@ -43,6 +47,14 @@ const ScanProductScreen = ({route, navigation}) => {
         setModalMessage('Kesalahan tidak diketahui, mohon coba lagi!');
         setModalType('warning');
       });
+  }
+
+  async function sendNotif() {
+    await sendNotificationToUser(
+      requesToken,
+      `Status permintaan penarikan barang`,
+      `Permintaan penarikan ${productName} telah disetujui.`,
+    );
   }
 
   return (

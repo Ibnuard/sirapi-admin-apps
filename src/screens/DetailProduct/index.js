@@ -7,6 +7,7 @@ import {
   ADMIN_GET_PRODUCT_DETAIL,
   ADMIN_REJECT_REQUEST,
 } from '../../utils/FirebaseUtils';
+import {sendNotificationToUser} from '../../utils/Utils';
 
 const DetailProductScreen = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -58,6 +59,7 @@ const DetailProductScreen = ({navigation, route}) => {
     ADMIN_REJECT_REQUEST(data?.requestId)
       .then(() => {
         console.log('Reject Success');
+        sendNotif();
         setModalType('success');
         setModalMessage('Permintaan berhasil ditolak!');
       })
@@ -65,6 +67,14 @@ const DetailProductScreen = ({navigation, route}) => {
         setModalType('warning');
         setModalMessage('Permintaan gagal ditolak, mohon coba lagi!');
       });
+  }
+
+  async function sendNotif() {
+    await sendNotificationToUser(
+      requestData?.requestToken,
+      'Status permintaan penarikan barang',
+      `Permintaan penarikan ${productData?.productName} ditolak!`,
+    );
   }
 
   function handleOnButtonPressed() {
@@ -148,6 +158,8 @@ const DetailProductScreen = ({navigation, route}) => {
                   productId: productData?.productId,
                   productCode: productDetail?.productCode,
                   requestAmount: requestData?.requestQty,
+                  productName: productData?.productName,
+                  requestToken: requestData?.requestToken,
                 })
               }
             />
