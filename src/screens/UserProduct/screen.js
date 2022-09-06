@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
-import {Button} from '../../components';
+import {Input} from '../../components';
 import {Colors} from '../../styles';
 import {ADMIN_GET_ALL_PRODUCT} from '../../utils/FirebaseUtils';
-import {randomNumber} from '../../utils/Utils';
 
 const UserProductScreen = ({navigation}) => {
   const [products, setProducts] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [filter, setFilter] = React.useState('');
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -40,6 +40,12 @@ const UserProductScreen = ({navigation}) => {
       } else {
         setIsLoading(false);
       }
+    });
+  }
+
+  function filterProduct(arr = [], key = '') {
+    return arr.filter(function (item) {
+      return item?.productName?.toLowerCase().includes(key.toLowerCase());
     });
   }
 
@@ -74,7 +80,16 @@ const UserProductScreen = ({navigation}) => {
           Tekan untuk membuat permintaan penarikan
         </Text>
       </View>
-      <View style={{flex: 1}}>
+      <Input
+        placeholder={'Cari barang...'}
+        onChangeText={text => setFilter(text)}
+        value={filter}
+      />
+      <View
+        style={{
+          flex: 1,
+          marginTop: 14,
+        }}>
         {isLoading ? (
           <View style={{justifyContent: 'center', flex: 1}}>
             <ActivityIndicator />
@@ -87,7 +102,8 @@ const UserProductScreen = ({navigation}) => {
         ) : (
           <FlatList
             keyExtractor={(item, index) => index}
-            data={products}
+            contentContainerStyle={{paddingTop: 14}}
+            data={filterProduct(products, filter)}
             renderItem={({item, index}) => <RenderItem item={item} />}
           />
         )}
