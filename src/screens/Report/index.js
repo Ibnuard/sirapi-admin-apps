@@ -97,7 +97,7 @@ const ReportScreen = () => {
               alignItems: 'center',
             }}>
             <Icon name={'arrow-bold-up'} size={18} color={Colors.COLOR_WHITE} />
-            <Text style={styles.textCount}>{item?.productIn}</Text>
+            <Text style={styles.textCount}>{item?.productOut}</Text>
           </View>
         </View>
       </View>

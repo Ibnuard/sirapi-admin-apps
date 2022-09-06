@@ -129,7 +129,7 @@ const EditDeleteProductScreen = ({navigation, route}) => {
         setModalType('success');
         setModalMessage('Perubahan berhasil disimpan!');
       })
-      .catch(() => {
+      .catch(e => {
         setModalType('warning');
         setModalMessage('Perubahan gagal disimpan!');
       });
@@ -233,8 +233,7 @@ const EditDeleteProductScreen = ({navigation, route}) => {
             !inputName?.length ||
             !inputDescription?.length ||
             !inputCode?.length ||
-            !inputQty?.length ||
-            inputQty == 0
+            !inputQty?.length
           }
           title="Simpan"
           onPress={() => updateProduct()}

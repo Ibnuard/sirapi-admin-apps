@@ -116,9 +116,18 @@ function ADMIN_ON_DATA_OUT(qty = 0, productId) {
       throw 'Product snap does not exist!';
     }
 
-    transaction.update(reportDataRef, {
-      productOut: reportDataSnapshot.data().productOut + qty,
-    });
+    if (!reportDataSnapshot.exists) {
+      console.log('Ref not exist!');
+      transaction.set(reportDataRef, {
+        productIn: 0,
+        productOut: qty,
+        yearId: currentYear,
+      });
+    } else {
+      transaction.update(reportDataRef, {
+        productOut: reportDataSnapshot.data().productOut + qty,
+      });
+    }
 
     transaction.update(reportRef, {
       productAvailable: reportSnapshot.data().productAvailable - qty,
@@ -150,9 +159,18 @@ function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
       throw 'Product snap does not exist!';
     }
 
-    transaction.update(reportDataRef, {
-      productIn: reportDataSnapshot.data().productIn + dif,
-    });
+    if (!reportDataSnapshot.exists) {
+      console.log('Ref not exist!');
+      transaction.set(reportDataRef, {
+        productIn: dif,
+        productOut: 0,
+        yearId: currentYear,
+      });
+    } else {
+      transaction.update(reportDataRef, {
+        productIn: reportDataSnapshot.data().productIn + dif,
+      });
+    }
 
     transaction.update(reportRef, {
       productIn:

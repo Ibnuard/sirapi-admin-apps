@@ -4,6 +4,7 @@ import {Button} from '../../components';
 import BaseModal from '../../components/Modal';
 import {Colors} from '../../styles';
 import {
+  ADMIN_APPROVE_REQUEST,
   ADMIN_GET_PRODUCT_DETAIL,
   ADMIN_REJECT_REQUEST,
 } from '../../utils/FirebaseUtils';
@@ -48,6 +49,8 @@ const DetailProductScreen = ({navigation, route}) => {
     });
   }
 
+  //REJECT
+
   function onRejectButtonPressed() {
     setModalType('alert');
     setModalMessage('Apakah Anda yakin ingin menolak permintaan ini?');
@@ -67,6 +70,35 @@ const DetailProductScreen = ({navigation, route}) => {
         setModalType('warning');
         setModalMessage('Permintaan gagal ditolak, mohon coba lagi!');
       });
+  }
+
+  //APPROVE
+  function onApproveButtonPressed() {
+    setModalType('loading');
+    setModalVisible(true);
+    ADMIN_APPROVE_REQUEST(
+      data?.requestId,
+      productData?.productId,
+      requestData?.requestQty,
+    )
+      .then(() => {
+        sendSuccessNotif();
+        setModalMessage('Permintaan berhasil disetujui!');
+        setModalType('success');
+      })
+      .catch(e => {
+        console.log(e);
+        setModalMessage('Kesalahan tidak diketahui, mohon coba lagi!');
+        setModalType('warning');
+      });
+  }
+
+  async function sendSuccessNotif() {
+    await sendNotificationToUser(
+      requesToken,
+      `Status permintaan penarikan barang`,
+      `Permintaan penarikan ${productData?.productName} telah disetujui.`,
+    );
   }
 
   async function sendNotif() {
@@ -152,16 +184,7 @@ const DetailProductScreen = ({navigation, route}) => {
             />
             <Button
               title="Scan untuk menyetujui"
-              onPress={() =>
-                navigation.navigate('ScanProduct', {
-                  requestId: data?.requestId,
-                  productId: productData?.productId,
-                  productCode: productDetail?.productCode,
-                  requestAmount: requestData?.requestQty,
-                  productName: productData?.productName,
-                  requestToken: requestData?.requestToken,
-                })
-              }
+              onPress={() => onApproveButtonPressed()}
             />
           </>
         )}
