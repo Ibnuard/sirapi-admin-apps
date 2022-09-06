@@ -16,6 +16,7 @@ import {getImageFromCamera, getImageFromGallery} from '../../utils/MediaUtils';
 import {
   ADMIN_ADD_PRODUCT,
   ADMIN_DELETE_PRODUCT,
+  ADMIN_ON_DATA_REMOVED,
   ADMIN_ON_DATA_UPDATED,
   ADMIN_UPDATE_PRODUCT,
   USER_CREATE_REQUEST,
@@ -73,10 +74,45 @@ const EditDeleteProductScreen = ({navigation, route}) => {
     setModalType('loading');
     ADMIN_DELETE_PRODUCT(data?.productQuantity, data?.productId)
       .then(() => {
+        //doReportData();
+        doDeleteReport();
+      })
+      .catch(err => {
+        setModalType('warning');
+        setModalMessage('Data gagal dihapus!');
+      });
+  }
+
+  // function doReportData() {
+  //   console.log('Do report delete....');
+  //   ADMIN_ON_DATA_REMOVED(data?.productQuantity)
+  //     .then(() => {
+  //       doDeleteReport();
+  //     })
+  //     .catch(() => {
+  //       setModalType('warning');
+  //       setModalMessage('Data gagal dihapus!');
+  //     });
+  // }
+
+  /*
+  32788
+  32798
+  32803
+
+
+  1829
+  1839
+  1844
+  */
+
+  function doDeleteReport() {
+    ADMIN_ON_DATA_UPDATED(data?.productQuantity, 'dec')
+      .then(() => {
         setModalType('success');
         setModalMessage('Data berhasil dihapus!');
       })
-      .catch(err => {
+      .catch(e => {
         setModalType('warning');
         setModalMessage('Data gagal dihapus!');
       });

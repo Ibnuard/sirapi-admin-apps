@@ -18,9 +18,7 @@ const ADMIN_GET_ALL_PRODUCT = () => {
 };
 
 const ADMIN_DELETE_PRODUCT = (qty, id) => {
-  return ADMIN_ON_DATA_REMOVED(qty).then(() => {
-    return productCollection.doc(id).delete();
-  });
+  return productCollection.doc(id).delete();
 };
 
 const ADMIN_UPDATE_PRODUCT = (id, data) => {
@@ -73,7 +71,7 @@ function ADMIN_ON_DATA_ADDED(qty) {
   });
 }
 
-function ADMIN_ON_DATA_REMOVED(qty) {
+export function ADMIN_ON_DATA_REMOVED(qty) {
   return firestore().runTransaction(async transaction => {
     const reportRef = reportCollection.doc('Product');
     // Get post data first
@@ -82,6 +80,8 @@ function ADMIN_ON_DATA_REMOVED(qty) {
     if (!reportSnapshot.exists) {
       throw 'Post does not exist!';
     }
+
+    console.log('DELETE QUANTITY : ' + qty);
 
     transaction.update(reportRef, {
       productIn: reportSnapshot.data().productIn - qty,
@@ -141,6 +141,7 @@ function ADMIN_ON_DATA_OUT(qty = 0, productId) {
 }
 
 function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
+  console.log('ON DATA UPDATED...');
   return firestore().runTransaction(async transaction => {
     const currentMonthNumber = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
     const currentYear = GET_CURRENT_DATETIME().split('-')[0];
@@ -168,7 +169,10 @@ function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
       });
     } else {
       transaction.update(reportDataRef, {
-        productIn: reportDataSnapshot.data().productIn + dif,
+        productIn:
+          type == 'inc'
+            ? reportDataSnapshot.data().productIn + dif
+            : reportDataSnapshot.data().productIn - dif,
       });
     }
 
