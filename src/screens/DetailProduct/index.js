@@ -7,6 +7,8 @@ import {
   ADMIN_APPROVE_REQUEST,
   ADMIN_GET_PRODUCT_DETAIL,
   ADMIN_REJECT_REQUEST,
+  ADMIN_SAVE_PRODUCT_IN,
+  ADMIN_SAVE_PRODUCT_OUT,
 } from '../../utils/FirebaseUtils';
 import {sendNotificationToUser} from '../../utils/Utils';
 
@@ -80,6 +82,26 @@ const DetailProductScreen = ({navigation, route}) => {
       data?.requestId,
       productData?.productId,
       requestData?.requestQty,
+    )
+      .then(() => {
+        // sendSuccessNotif();
+        // setModalMessage('Permintaan berhasil disetujui!');
+        // setModalType('success');
+        saveProductDetailReport();
+      })
+      .catch(e => {
+        console.log(e);
+        setModalMessage('Kesalahan tidak diketahui, mohon coba lagi!');
+        setModalType('warning');
+      });
+  }
+
+  function saveProductDetailReport() {
+    console.log('Save product report');
+    ADMIN_SAVE_PRODUCT_OUT(
+      productData?.productCode,
+      requestData?.requestQty,
+      productData?.productName,
     )
       .then(() => {
         sendSuccessNotif();
@@ -183,7 +205,7 @@ const DetailProductScreen = ({navigation, route}) => {
               onPress={() => onRejectButtonPressed()}
             />
             <Button
-              title="Scan untuk menyetujui"
+              title="Setujui Permintaan"
               onPress={() => onApproveButtonPressed()}
             />
           </>

@@ -193,6 +193,60 @@ function ADMIN_ON_DATA_UPDATED(dif, type = 'inc') {
   });
 }
 
+const ADMIN_SAVE_PRODUCT_IN = (productCode, quantity, productName) => {
+  return firestore().runTransaction(async transaction => {
+    const currentMonthNumber = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
+    const currentYear = GET_CURRENT_DATETIME().split('-')[0];
+    const month = MONTH_LIST(false)[currentMonthNumber];
+
+    const reportDataRef = reportDataCollection
+      .collection(month.sub)
+      .doc(currentYear)
+      .collection('ProductIn')
+      .doc(productCode);
+
+    const reportSnapshot = await transaction.get(reportDataRef);
+
+    if (!reportSnapshot.exists) {
+      transaction.set(reportDataRef, {
+        productName,
+        quantity,
+      });
+    } else {
+      transaction.update(reportDataRef, {
+        quantity: reportSnapshot.data().quantity + quantity,
+      });
+    }
+  });
+};
+
+const ADMIN_SAVE_PRODUCT_OUT = (productCode, quantity, productName) => {
+  return firestore().runTransaction(async transaction => {
+    const currentMonthNumber = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
+    const currentYear = GET_CURRENT_DATETIME().split('-')[0];
+    const month = MONTH_LIST(false)[currentMonthNumber];
+
+    const reportDataRef = reportDataCollection
+      .collection(month.sub)
+      .doc(currentYear)
+      .collection('ProductOut')
+      .doc(productCode);
+
+    const reportSnapshot = await transaction.get(reportDataRef);
+
+    if (!reportSnapshot.exists) {
+      transaction.set(reportDataRef, {
+        productName,
+        quantity,
+      });
+    } else {
+      transaction.update(reportDataRef, {
+        quantity: reportSnapshot.data().quantity + quantity,
+      });
+    }
+  });
+};
+
 const ADMIN_GET_ALL_REQUEST = () => {
   return requestCollection.orderBy('datetime', 'asc').get();
 };
@@ -274,6 +328,19 @@ const GET_ADMIN_TOKEN = () => {
   });
 };
 
+const ADMIN_GET_PRODUCT_REPORT_IN_OUT = type => {
+  const currentMonthNumber = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
+  const currentYear = GET_CURRENT_DATETIME().split('-')[0];
+  const month = MONTH_LIST(false)[currentMonthNumber];
+  const dataType = type == 'in' ? 'ProductIn' : 'ProductOut';
+
+  return reportDataCollection
+    .collection(month.sub)
+    .doc(currentYear)
+    .collection(dataType)
+    .get();
+};
+
 export {
   ADMIN_ADD_PRODUCT,
   ADMIN_GET_ALL_PRODUCT,
@@ -291,4 +358,7 @@ export {
   GET_REPORT_DATA,
   SAVE_ADMIN_TOKEN,
   GET_ADMIN_TOKEN,
+  ADMIN_SAVE_PRODUCT_IN,
+  ADMIN_SAVE_PRODUCT_OUT,
+  ADMIN_GET_PRODUCT_REPORT_IN_OUT,
 };

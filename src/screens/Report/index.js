@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import {ActivityIndicator} from 'react-native-paper';
 import {GET_REPORT_DATA, SEND_REPORT_DATA} from '../../utils/FirebaseUtils';
 
-const ReportScreen = () => {
+const ReportScreen = ({navigation}) => {
   const MONTHS = MONTH_LIST(true);
   const currentMonth = Number(GET_CURRENT_DATETIME().split('-')[1]) - 1;
 
@@ -15,6 +15,8 @@ const ReportScreen = () => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [report, setReport] = React.useState([]);
+
+  console.log('Active Month : ' + activeMonth);
 
   React.useEffect(() => {
     getMonthlyReport();
@@ -66,7 +68,17 @@ const ReportScreen = () => {
 
   function renderCardReport(item, index) {
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.card}
+        onPress={() =>
+          navigation.navigate('ReportDetail', {
+            productIn: item?.productIn,
+            productOut: item?.productOut,
+            yearId: item?.yearId,
+            month: activeMonth,
+          })
+        }>
         <Text style={styles.textYear}>{item?.yearId}</Text>
         <View style={{flexDirection: 'row'}}>
           <View
@@ -100,7 +112,7 @@ const ReportScreen = () => {
             <Text style={styles.textCount}>{item?.productOut}</Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 

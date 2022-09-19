@@ -16,6 +16,7 @@ import EditDeleteProductScreen from '../screens/EditDeleteProduct';
 import DetailProductScreen from '../screens/DetailProduct';
 import ScanProductScreen from '../screens/ScanProduct';
 import ReportScreen from '../screens/Report';
+import ReportDetailScreen from '../screens/ReportDetail';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -78,6 +79,13 @@ export const HomeStack = () => {
         component={ReportScreen}
         options={{
           title: 'Laporan',
+        }}
+      />
+      <Stack.Screen
+        name="ReportDetail"
+        component={ReportDetailScreen}
+        options={{
+          title: 'Detail Laporan',
         }}
       />
       <Stack.Screen

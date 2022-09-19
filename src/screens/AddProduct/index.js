@@ -16,6 +16,7 @@ import {
   ADMIN_ADD_PRODUCT,
   ADMIN_DELETE_PRODUCT,
   ADMIN_ON_DATA_ADDED,
+  ADMIN_SAVE_PRODUCT_IN,
   SEND_REPORT_DATA,
 } from '../../utils/FirebaseUtils';
 import {generateProductId} from '../../utils/Utils';
@@ -85,10 +86,22 @@ const AddProductScreen = ({navigation}) => {
     const quantity = Number(qty);
     ADMIN_ON_DATA_ADDED(quantity)
       .then(() => {
+        saveProductInReport();
+      })
+      .catch(err => {
+        console.log('Report error : ' + err);
+        deleteProduct(id);
+      });
+  }
+
+  function saveProductInReport() {
+    console.log('product in reportt....');
+    ADMIN_SAVE_PRODUCT_IN(inputCode, Number(inputQty), inputName)
+      .then(() => {
         setModalType('success');
         setModalMessage('Barang berhasil ditambahkan.');
       })
-      .catch(err => {
+      .catch(e => {
         console.log('Report error : ' + err);
         deleteProduct(id);
       });
